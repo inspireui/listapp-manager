@@ -768,40 +768,163 @@ if (isset($_POST['submit'])) {
         // Hook up the Restore to Default button
         document.getElementById('reset').addEventListener('click', function (e) {
             e.preventDefault();
-            editorTemplate.setValue({
-                homepageLayout : <?php echo $homepageLayout; ?>,
-                verticalLayout : <?php echo $homepageLayout; ?>,
-            });
-            editor.setValue(starting_value);
-            editorMenu.setValue(starting_Menu);
-            editorColor.setValue({
-                <?php
-                foreach ($color as $kPrev => $item):
+            let comment = 'Are you sure? This will clear your all settings and recover the default data.';
+            if(window.confirm(comment)){
+                // reset the same as local
+                editorTemplate.setValue({
+                    homepageLayout: 1,
+                    verticalLayout: 2,
+                });
+                editor.setValue([
+                  {
+                    component: 'listing',
+                    // categoryListingId: "33",
+                    paging: true,
+                    layout: 3,
+                  },
+                  { component: 'map' },
+                  {
+                    component: 'listing',
+                    name: 'Eat & Drink',
+                    // typeId: "63",
+                    layout: 5,
+                  },
+                  {
+                    component: 'listing',
+                    name: 'Visit',
+                    // typeId: "66",
+                    paging: true,
+                    row: 3,
+                    layout: 8,
+                  },
+                  {
+                    component: 'listing',
+                    name: 'Stay',
+                    // typeId: "65",
+                    layout: 4,
+                  },
+                  {
+                    component: 'listing',
+                    name: 'Shops',
+                    // typeId: "64",
+                    layout: 7,
+                    width: 120,
+                    height: 250,
+                  },
+                  {
+                    component: 'news',
+                    name: 'Videos',
+                    // categoryNewsId: "160",
+                    paging: true,
+                    layout: 1,
+                  },
 
-                    if (is_object($item)) {
-                        echo "'" . $kPrev . "': {\n";
-                        foreach ($item as $k => $item2):
-                            echo "'" . $k . "': '" . $item2 . "', \n";
-                        endforeach;
-                        echo "}, \n";
-                    } else {
-                        echo "'" . $kPrev . "': '{$item}', \n";
-                    }
-                    // echo "},\n";
-                endforeach;
-                ?>
-            });
-            editorGeneral.setValue({
-                <?php
-                foreach ($general as $kPrev => $item):
-                    echo "'" . $kPrev . "': {";
-                    foreach ($item as $k => $item2):
-                        echo "'" . $k . "': '" . $item2 . "',";
-                    endforeach;
-                    echo "},\n";
-                endforeach;
-                ?>
-            });
+                  {
+                    component: 'news',
+                    name: 'Tips & Articles',
+                    paging: true,
+                    row: 3,
+                    layout: 9,
+                  },
+                ]);
+                
+                editorMenu.setValue([
+                  {
+                    route: 'home',
+                    name: 'Explore',
+                  },
+                  {
+                    route: 'setting',
+                    name: 'Settings',
+                  },
+                  {
+                    route: 'customPage',
+                    params: {
+                      title: 'Contact',
+                      url: 'https://inspireui.com/about',
+                    },
+                    name: 'Contact',
+                  },
+                  {
+                    route: 'customPage',
+                    params: {
+                      title: 'About Us',
+                      url: 'https://inspireui.com/about',
+                    },
+                    name: 'About Us',
+                    icon: 'assignment',
+                  },
+                  {
+                    route: 'login',
+                    name: 'Sign In',
+                  },
+                ]);
+                editorColor.setValue({
+                  mainColorTheme: '#000000',
+                  tabbar: '#ffffff',
+                  tabbarTint: '#3bc651',
+                  tabbarColor: '#929292',
+                });
+                editorGeneral.setValue({
+                    Firebase: {
+                        apiKey: 'AIzaSyAZhwel4Nd4T5dSmGB3fI_MUJj6BIz5Kk8',
+                        authDomain: 'beonews-ef22f.firebaseapp.com',
+                        databaseURL: 'https://beonews-ef22f.firebaseio.com',
+                        storageBucket: 'beonews-ef22f.appspot.com',
+                        messagingSenderId: '1008301626030',
+                        readlaterTable: 'list_readlater',
+                      },
+                      Facebook: {
+                        visible: false,
+                        adPlacementID: '1809822172592320_1981610975413438',
+                        logInID: '1809822172592320',
+                        sizeAds: 'standard', // standard, large
+                      },
+                      AdMob: {
+                        visible: false,
+                        deviceID: 'pub-2101182411274198',
+                        unitID: 'ca-app-pub-2101182411274198/8802887662',
+                        unitInterstitial: 'ca-app-pub-2101182411274198/7326078867',
+                        isShowInterstital: true,
+                      }
+                });
+            }else{
+                return false;
+            }
+            // editorTemplate.setValue({
+            //     homepageLayout : <?php //echo $homepageLayout; ?>,
+            //     verticalLayout : <?php //echo $homepageLayout; ?>,
+            // });
+            // editor.setValue(starting_value);
+            // editorMenu.setValue(starting_Menu);
+            // editorColor.setValue({
+            //     <?php
+            //     foreach ($color as $kPrev => $item):
+
+            //         if (is_object($item)) {
+            //             echo "'" . $kPrev . "': {\n";
+            //             foreach ($item as $k => $item2):
+            //                 echo "'" . $k . "': '" . $item2 . "', \n";
+            //             endforeach;
+            //             echo "}, \n";
+            //         } else {
+            //             echo "'" . $kPrev . "': '{$item}', \n";
+            //         }
+            //         // echo "},\n";
+            //     endforeach;
+            //     ?>
+            // });
+            // editorGeneral.setValue({
+            //     <?php
+            //     foreach ($general as $kPrev => $item):
+            //         echo "'" . $kPrev . "': {";
+            //         foreach ($item as $k => $item2):
+            //             echo "'" . $k . "': '" . $item2 . "',";
+            //         endforeach;
+            //         echo "},\n";
+            //     endforeach;
+            //     ?>
+            // });
         });
 
         jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
