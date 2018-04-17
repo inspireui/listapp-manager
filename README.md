@@ -1,12 +1,21 @@
 === ListApp Mobile Manager ===
+
 Contributors: InsireUI
+
 Plugin link: https://github.com/inspireui/listapp-manager
+
 Tags: listapp, react native, mobile plugin
+
 Requires at least: 4.0
+
 Tested up to: 4.6
+
 Stable tag: 1.0.0
+
 License: GPLv2 or later
+
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
 
 The ListApp Settings and APIs for supporting the Listing Directory mobile app by React Native framework
 
