@@ -1,7 +1,20 @@
 <?php
+/**
+ * Plugin Name: ListApp Mobile Manager
+ * Plugin URI: https://github.com/inspireui/listapp-manager
+ * Description: The ListApp Settings and APIs for supporting the Listing Directory mobile app by React Native framework
+ * Version: 1.0.0
+ * Author: InspireUI
+ * Author URI: http://inspireui.com
+ *
+ * Text Domain: listapp
+ */
+
+
 if (!defined('ABSPATH')) {
     exit;
 }
+
 
 class ListAppSetting
 {
@@ -13,9 +26,10 @@ class ListAppSetting
     protected $_routeApi = 'inspireui/v1';
     protected $_routeApiUrl = 'config';
 
-    /**
-     * ListAppSetting constructor
-     */
+    /*
+    * ListAppSetting constructor
+    */
+
     public function __construct()
     {
         define('LISTAPP_SETTING', $this->version);
@@ -30,9 +44,10 @@ class ListAppSetting
         add_action('admin_menu', function () {
             // add menu item to settings page
             add_menu_page(__($this->_pageTitle, $this->_textDomain),
-                __($this->_menuTitle, $this->_textDomain),
-                'manage_options', $this->_slugPage,
-                array($this, 'display_setting'), 'dashicons-location');
+                          __($this->_menuTitle, $this->_textDomain),
+                          'manage_options', $this->_slugPage,
+                          array($this, 'display_setting'), 
+                          'dashicons-location');
 
         });
 
@@ -47,7 +62,18 @@ class ListAppSetting
         //allow comments
         add_filter('rest_allow_anonymous_comments', '__return_true');
 
+        //autoload templates 
+        $this->load_layout();
         $this->set_config_default();
+    }
+
+    /**
+    * Load Template When Active
+    */
+
+    public function load_layout(){
+        require_once LISTAPP_SETTING_PLUGIN_PATH . '/controllers/mstore-checkout.php';
+        require_once LISTAPP_SETTING_PLUGIN_PATH . '/rest-api/template.php';
     }
 
     /**
@@ -77,12 +103,10 @@ class ListAppSetting
                 (Object)[
                     'route' =>'home',
                     'name' => 'Discover',
-                    'icon'=> 'home'
                 ],
                 (Object)[
                     'route' =>'setting',
                     'name' => 'Setting',
-                    'icon'=> 'settings'
                 ],
                 (Object)[
                     'route' =>'customPage',
@@ -92,12 +116,11 @@ class ListAppSetting
                             'title' => 'About Us', 
                             'url'=> ''
                     ],
-                    'icon'=> 'home'
+
                 ],
                 (Object)[
                     'route' =>'login',
                     'name' => 'Sign In',
-                    'icon'=> 'user'
                 ],
 
             ],
@@ -133,15 +156,22 @@ class ListAppSetting
     public function get_config_layouts($data)
     {
         $layouts = get_option('_listapp_config', array());
-
+        $result = json_decode($layouts);
         if (empty($layouts)) {
             return [];
         }
+        foreach($result->menu as $item):
+            foreach($item as $key => $item2):
+                if($key == 'params' && is_array($item->params) && count($item->params) == 0){
+                    unset($item->params);
+                }
+            endforeach;
+        endforeach;
         // foreach ($layouts as $k => $item):
         //     $layouts[$k] = json_decode(stripslashes($item));
         // endforeach;
 
-        return json_decode($layouts);
+        return $result;
     }
 }
 

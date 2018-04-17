@@ -172,19 +172,22 @@ if (isset($_POST['submit'])) {
 
     var starting_Menu = [
         <?php
-        foreach ($menu as $kPrev => $item):
-            echo "{";
+        // print_r($menu);
+        foreach($menu as $kPrev => $item):
+            echo '{';
             foreach ($item as $k => $item2):
-                if (is_object($item2) && count((array)$item2) == 0) {
-                    // unset($item->$k);
-                    // print_r($item);
-                    // echo $k;
-                    unset($item->{$k});
-                } else {
-                    echo "'" . $k . "': '" . $item2 . "',";
+                if($k == 'params'){
+                    if(is_array($item['params']) && count($item['params']) > 0){
+                        echo "'params':";
+                            echo "{'title': '". $item['name']. "',";
+                            echo "'id': ". $item['params']['id']."}";
+                    }
+                }else{
+                    echo "'{$k}':'{$item2}',";
                 }
             endforeach;
             echo "},\n";
+            
         endforeach;
         ?>
     ];
@@ -402,9 +405,9 @@ if (isset($_POST['submit'])) {
                         "type": "string",
                         'title': 'Navigation',
                         "default": "home",
-                        "enum": ["home", "categories", "map", "search", "photo", "readlater", "setting", "login",],
+                        "enum": ["home", "categories", "map", "search", "photo", "readlater", "setting", "login", "customPage"],
                         "options": {
-                            "enum_titles": ["Home", "Categories", "Map", "Search", "Photo", "Read Later", "Setting", "Login"]
+                            "enum_titles": ["Home", "Categories", "Map", "Search", "Photo", "Read Later", "Setting", "Login", "Custom Page"]
                         },
 
                     },
@@ -413,28 +416,25 @@ if (isset($_POST['submit'])) {
                         "type": "string",
                         'description': 'Name of the menu item',
                     },
-                    // "params": {
-                    //     "title": "Params",
-                    //     "type": "object",
-                    //     'description': 'This setting only apply for CustomPage Navigation',
-                    //     'properties': {
-                    //         'title': {
-                    //             'type': 'string',
-                    //             'title': 'Title',
-                    //             'description': 'Menu Title'
-                    //         },
-                    //         'id': {
-                    //             'type': 'string',
-                    //             'title': 'Post ID',
-                    //             'description': 'ID of the post content '
-                    //         },
-                    //         'url': {
-                    //             'type': 'string',
-                    //             'title': 'Url',
-                    //             'description': 'Link to any web page'
-                    //         },
-                    //     },
-                    // }
+                    "params": {
+                        "title": "Params",
+                        "type": "object",
+                        'description': 'This setting only apply for CustomPage Navigation',
+                        'properties': {                           
+                            'id': {
+                                'type': 'string',
+                                'title': 'Post ID',
+                                'description': 'ID of the post content ',
+                                'default': '',
+                            },
+                            'url': {
+                                'type': 'string',
+                                'title': 'Url',
+                                'description': 'Link to any web page',
+                                'default': '',
+                            },
+                        },
+                    }
 
                 } // end properties
             } // end all items
@@ -717,25 +717,19 @@ if (isset($_POST['submit'])) {
 
 
             /* --- event template --- */
-            
-            // jQuery('select[name="root[homepageLayout]"]').on("change",function(){
-                // let $this = jQuery(this).val();
-                let $this = editorTemplate.getEditor('root.homepageLayout').getValue();
-                // console.log($this);
-                if($this == 2){
-                    jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'block');
-                    jQuery('#editor_holder').css('display', 'none');
-                }else if($this == 1){
-                    jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
-                    jQuery('#editor_holder').css('display', 'block');
-                }else{
-                    jQuery('#editor_holder').css('display', 'none');
-                    jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
-                }
-           
-            // });
-
-
+            let $this = editorTemplate.getEditor('root.homepageLayout').getValue();
+            // console.log($this);
+            if($this == 2){
+                jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'block');
+                jQuery('#editor_holder').css('display', 'none');
+            }else if($this == 1){
+                jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
+                jQuery('#editor_holder').css('display', 'block');
+            }else{
+                jQuery('#editor_holder').css('display', 'none');
+                jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
+            }
+       
         });
 
         editor.on('change', function () {
@@ -745,8 +739,10 @@ if (isset($_POST['submit'])) {
             document.getElementById('kq_home').value = JSON.stringify(home, undefined, 7);
         });
 
-        editorMenu.on('change', function () { 
-          
+
+
+        
+        editorMenu.on('change', function () {
             document.getElementById('kq_menu').value = JSON.stringify(editorMenu.getValue(), null, 7);
         });
         editorColor.on('change', function () { // console.log(editor.getValue());
@@ -756,6 +752,14 @@ if (isset($_POST['submit'])) {
             document.getElementById('kq_general').value = JSON.stringify(editorGeneral.getValue(), null, 7);
         });
 
+
+        jQuery('.slidebar li a[name="home"]').click(function(e){
+            let $this = editorTemplate.getEditor('root.homepageLayout').getValue();
+            // console.log($this);
+            if($this == 1){
+                jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
+            }
+        });
 
         document.getElementById('save').addEventListener('click', function () {
             jQuery(".frmSubmit").submit();
@@ -861,5 +865,7 @@ if (isset($_POST['submit'])) {
     });
 
 </script>
+
+
 </body>
 </html>

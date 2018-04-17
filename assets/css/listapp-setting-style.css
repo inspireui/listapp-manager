@@ -161,13 +161,13 @@ div[data-schemaid="root"] > div { border: 0 !important;}
     color: rgba(0,0,0, .75);
     font-family: 'PoppinsLight';
 }
-
+#editor_holder_menu .row p {bottom: -20px !important}
+div[data-schemapath="root.0.id"] {display: none !important}
 #editor_holder div[data-schematype="object"] > div  div  div .row:nth-child(7),
 #editor_holder  div[data-schematype="object"] > div  div  div .row:nth-child(8){
     width: 46%;
     float: left
 }
-
 
 #editor_holder div[data-schemapath="root.0.width"] p,
 #editor_holder div[data-schemapath="root.0.height"] p,
@@ -185,18 +185,17 @@ div[data-schemaid="root"] > div { border: 0 !important;}
     float: left;
 }
 #editor_holder_menu div[data-schemapath="root.0.params"] > p,
-#editor_holder_menu div[data-schemapath="root.1.params"] > p
-#editor_holder_menu div[data-schemapath="root.2.params"] > p
-#editor_holder_menu div[data-schemapath="root.3.params"] > p
-#editor_holder_menu div[data-schemapath="root.4.params"] > p
-#editor_holder_menu div[data-schemapath="root.5.params"] > p
-#editor_holder_menu div[data-schemapath="root.6.params"] > p
-#editor_holder_menu div[data-schemapath="root.7.params"] > p
+#editor_holder_menu div[data-schemapath="root.1.params"] > p,
+#editor_holder_menu div[data-schemapath="root.2.params"] > p,
+#editor_holder_menu div[data-schemapath="root.3.params"] > p,
+#editor_holder_menu div[data-schemapath="root.4.params"] > p,
+#editor_holder_menu div[data-schemapath="root.5.params"] > p,
+#editor_holder_menu div[data-schemapath="root.6.params"] > p,
+#editor_holder_menu div[data-schemapath="root.7.params"] > p,
 #editor_holder_menu div[data-schemapath="root.8.params"] > p{
     position: static;
 }
 #editor_holder_menu div[data-schemapath="root.0"] h3 div{ float: right !important ; margin-top: -10px}
-
 #editor_holder_color .row p {margin-left: 15px !important}
 #editor_holder_color .row {
     margin: 20px 0;
