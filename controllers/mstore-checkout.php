@@ -89,7 +89,7 @@ function registerJsonApiController($aControllers)
 
 function setMstoreUserControllerPath($sDefaultPath)
 {
-    return dirname(__FILE__) . '/controllers/mstore-user.php';
+    return dirname(__FILE__) . '/mstore-user.php';
 }
 
 function json_api_mstore_user_checkAuthCookie($sDefaultPath)
