@@ -141,7 +141,7 @@ class PageTemplater
         $table_insert = $wpdb->prefix . "posts";
         $join_table = $wpdb->prefix . "postmeta";
         $where = $wpdb->prepare("WHERE post_type ='%s' AND post_status='%s' AND (meta_value = '%s' OR meta_key = '%s'", 'page', 'publish', 'checkout.php', '_mstore_checkout_template');
-        $result = $wpdb->get_var($wpdb->prepare("SELECT * FROM $table_insert AS p INNER JOIN $join_table AS meta ON p.ID = meta.post_id $where)"), OBJECT);
+        $result = $wpdb->get_var($wpdb->prepare("SELECT * FROM %s AS p INNER JOIN %s AS meta ON p.ID = meta.post_id $where)", $table_insert, $join_table), OBJECT);
         if(empty($result)){
             $pageguid = site_url() . "/mstore-checkout";
             // Create post object
