@@ -43,7 +43,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
 ?>
 
 <form method="post" class="frmSubmit">
-    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce(esc_html('inspireuiteam')) ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo sanitize_text_field(wp_create_nonce('inspireuiteam')) ?>" />
     <div class="admin-panel">
         <div class="slidebar">
             <ul>
