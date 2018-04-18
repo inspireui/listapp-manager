@@ -165,8 +165,8 @@ class JSON_API_MStore_User_Controller
 
         global $json_api;
 
-        foreach ($_POST as $k => $val) {
-            if (isset($_POST[$k])) {
+        foreach (sanitize_text_field($_POST) as $k => $val) {
+            if (isset(sanitize_text_field($_POST[$k]))) {
                 $json_api->query->$k = $val;
             }
         }
