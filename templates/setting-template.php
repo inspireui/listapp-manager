@@ -215,7 +215,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     'options': {
                         'enum_titles': ['Horizontal', 'Vertical', 'Mansory']
                     },
-                    'default': <?php echo $homepageLayout ? $homepageLayout : 1?>,
+                    'default': <?php echo esc_html($homepageLayout ? $homepageLayout : 1) ?>,
                     'title': 'Home Layout',
                 },
                 "verticalLayout": {
@@ -317,11 +317,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "title": "Type",
                         "type": "string",
                         'enum': ['', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
-                            echo $item->term_id . ", ";
+                            echo esc_html($item->term_id) . ", ";
                         endforeach;?>],
                         'options': {
                             'enum_titles': ['Choose', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
-                                echo "'" . $item->name . "', ";
+                                echo "'" . esc_html($item->name) . "', ";
                             endforeach;?>]
                         },
                         'default': '',
@@ -332,11 +332,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "type": "number",
                         "description": 'Optional, select this value if the Compoent is Listing',
                         'enum': ['', <?php $terms = get_terms('job_listing_category'); foreach ($terms as $item):
-                            echo $item->term_id . ", ";
+                            echo esc_html($item->term_id) . ", ";
                         endforeach;?>],
                         'options': {
                             'enum_titles': ['Choose', <?php $terms = get_terms('job_listing_category'); foreach ($terms as $item):
-                                echo "'" . $item->name . "', ";
+                                echo "'" . esc_html($item->name) . "', ";
                             endforeach;?>]
                         },
                         'default': '',
