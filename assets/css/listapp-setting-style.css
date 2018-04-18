@@ -555,7 +555,7 @@ input[name='root[0][name]'], select[name='root[0][typeId]']{
 /* --- template home config layout --- */
 
 #editor_holder div[data-schemapath="root"]  > h3 {
-    display: block !important;
+    display: none !important;
     margin-left: 40px;
 }
 

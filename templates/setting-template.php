@@ -274,7 +274,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
             }
             ,
             type: "array",
-            title: "Horizontal Layout",
+            title: " ",
             format: "string", // table or grid
             items: {
                 title: "Row ",
@@ -619,6 +619,38 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
             title: " ",
             format: "string", // table or grid
             properties: {
+                "Firebase": {
+                    "type": "object",
+                    'title': 'Firebase',
+                    'properties': {
+                        'apiKey': {
+                            'type': 'string',
+                            'title': 'Api Key',
+                        },
+                        'authDomain': {
+                            'type': 'string',
+                            'title': 'Auth Domain',
+                        },
+                        'databaseURL': {
+                            'type': 'string',
+                            'title': 'Database URL',
+
+                        },
+                        'storageBucket': {
+                            'type': 'string',
+                            'title': 'Storage Bucket',
+                        },
+                        'messagingSenderId': {
+                            'type': 'string',
+                            'title': 'Messaging SenderId',
+                        },
+                        'readlaterTable': {
+                            'type': 'string',
+                            'title': 'Table',
+                        },
+
+                    }
+                }, // end block
                 "Facebook": {
                     "type": "object",
                     'title': 'Facebook',
@@ -873,7 +905,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                   tabbarColor: '#929292',
                 });
                 editorGeneral.setValue({
-                    Firebase: {
+                      Firebase: {
                         apiKey: 'AIzaSyAZhwel4Nd4T5dSmGB3fI_MUJj6BIz5Kk8',
                         authDomain: 'beonews-ef22f.firebaseapp.com',
                         databaseURL: 'https://beonews-ef22f.firebaseio.com',

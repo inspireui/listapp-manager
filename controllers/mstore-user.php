@@ -395,3 +395,4 @@ class JSON_API_MStore_User_Controller
 }
  
  
+ // new JSON_API_MStore_User_Controller;

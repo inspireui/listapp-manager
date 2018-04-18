@@ -94,28 +94,41 @@ class ListAppSetting
             'homepageLayout' => 1,
             'verticalLayout' => 2,
             'horizontalLayout' => [
-                ['component' => 'listing', 'layout' => 1],
+                ['component' => 'listing', "paging" => true, 'layout' => 1],
                 ['component' => 'map'],
-                ['component' => 'listing', 'layout' => 2],
-                ['component' => 'news', 'layout' => 3],
+                ['component' => 'listing', 'name' => 'Eat & Drink', 'layout' => 5],
+                ['component'=> 'listing', 'name'=> 'Visit', 'paging'=> true, 'row'=> 3, 'layout'=> 8],
+                ['component'=> 'listing','name'=> 'Stay', 'layout'=> 4],
+                ['component'=> 'listing', 'name'=> 'Shops', 'layout'=> 7, 'width'=> 120, 'height'=> 250],
+                ['component'=> 'news', 'name'=> 'Videos', 'paging'=> true, 'layout'=> 1],
+                ['component'=> 'news', 'name'=> 'Tips & Articles', 'paging'=> true, 'row'=> 3, 'layout'=> 9]
             ],
             'menu' => [
                 (Object)[
                     'route' =>'home',
-                    'name' => 'Discover',
+                    'name' => 'Explore',
                 ],
                 (Object)[
                     'route' =>'setting',
-                    'name' => 'Setting',
+                    'name' => 'Settings',
+                ],
+                (Object)[
+                    'route' =>'customPage',
+                    'name' => 'Contact',
+                    'params' => (Object)[
+                        'title' => 'Contact', 
+                        'url'=> 'https://inspireui.com/about'
+                    ],
+
                 ],
                 (Object)[
                     'route' =>'customPage',
                     'name' => 'About Us',
                     'params' => (Object)[
-                            'id' => 1,
-                            'title' => 'About Us', 
-                            'url'=> ''
+                        'title' => 'Contact', 
+                        'url'=> 'https://inspireui.com/about'
                     ],
+                    'icon' => 'assignment',
 
                 ],
                 (Object)[
@@ -125,19 +138,32 @@ class ListAppSetting
 
             ],
             'color' => (Object)[
-                 "mainColorTheme" => "#000000",
-                 "tabbar"=>"#ffffff",
-                 "tabbarTint"=> "#000000",
-                 "tabbarColor"=> "#000000"
+                  'mainColorTheme'=> '#000000',
+                  'tabbar' => '#ffffff',
+                  'tabbarTint' => '#3bc651',
+                  'tabbarColor' => '#929292',
             ],
             'general' => (Object)[
+                'Firebase' => (Object)[
+                        'apiKey'=> 'AIzaSyAZhwel4Nd4T5dSmGB3fI_MUJj6BIz5Kk8',
+                        'authDomain'=> 'beonews-ef22f.firebaseapp.com',
+                        'databaseURL'=> 'https://beonews-ef22f.firebaseio.com',
+                        'storageBucket'=> 'beonews-ef22f.appspot.com',
+                        'messagingSenderId'=> '1008301626030',
+                        'readlaterTable'=> 'list_readlater',
+                ],
                 "Facebook" => (Object)[
-                      "visible" => 'false',
-                      "sizeAds" => "standard"
+                        'visible'=> 'false',
+                        'adPlacementID'=> '1809822172592320_1981610975413438',
+                        'logInID'=> '1809822172592320',
+                        'sizeAds'=> 'standard', // standard, large
                 ],
                 "AdMob" => (Object)[
-                      "visible" => 'false',
-                      "isShowInterstital" => 'false'
+                        'visible'=> 'false',
+                        'deviceID'=> 'pub-2101182411274198',
+                        'unitID'=> 'ca-app-pub-2101182411274198/8802887662',
+                        'unitInterstitial'=> 'ca-app-pub-2101182411274198/7326078867',
+                        'isShowInterstital'=> 'true',
                 ]
             ],
         ];
