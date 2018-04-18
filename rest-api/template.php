@@ -145,7 +145,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	public function get_term_meta_image($object, $field_name, $request)
+	public function get_term_meta_image($object)
 	{
 
 		if($this->_isListable){
@@ -166,7 +166,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	public function get_product_id_linked($object, $field_name, $request)
+	public function get_product_id_linked($object)
 	{
 	    $product_id = get_post_meta($object['id'], '_products', true);
 	    return $product_id;
@@ -179,7 +179,7 @@ class Template
 	 * @param $request
 	 * @return array
 	 */
-	public function get_gallery_images_job_listing($object, $field_name, $request)
+	public function get_gallery_images_job_listing($object)
 	{
 	    $arr_images = array();
 	    $gallery = get_post_meta($object['id'], 'main_image', true);
@@ -228,7 +228,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	public function get_image_gallery($object, $field_name, $request)
+	public function get_image_gallery($object)
 	{
 		$name = $this->_isListify ? '_gallery_images' : '_job_gallery';
 	    $gallery = get_post_meta($object['id'], $name, true);
@@ -243,7 +243,7 @@ class Template
 	 * @param $request
 	 * @return array|bool
 	 */
-	public function get_comments_ratings($object, $field_name, $request)
+	public function get_comments_ratings($object)
 	{
 		$meta_key = $commentKey = 'pixrating';
 
@@ -321,7 +321,7 @@ class Template
 	 * @param $request
 	 * @return string|void
 	 */
-	public function get_cost_for_booking($object, $field_name, $request)
+	public function get_cost_for_booking($object)
 	{
 	    $currency = get_option('woocommerce_currency');
 	    $product_id = get_post_meta($object['id'], '_products', true);
@@ -356,7 +356,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	public function get_job_hours($object, $field_name, $request)
+	public function get_job_hours($object)
 	{
 	    $_job_hours = get_post_meta($object['id'], '_job_hours', true);
 	    return $_job_hours;

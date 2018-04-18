@@ -153,7 +153,7 @@ class ListAppSetting
      * @param $data
      * @return array|mixed|object
      */
-    public function get_config_layouts($data)
+    public function get_config_layouts()
     {
         $layouts = get_option('_listapp_config', array());
         $result = json_decode($layouts);
