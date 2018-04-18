@@ -38,19 +38,13 @@ button, .button {
     text-decoration: none;
     text-align: center;
     display: inline-block;
-    padding-top: 1rem;
-    padding-right: 2rem;
-    padding-bottom: 1.0625rem;
-    padding-left: 2rem;
+    padding: 1rem 2rem 1.0625rem 2rem;
     font-size: .8rem;
-    /*background-color: #008cba !important;*/
     border-color: #0079a1;
     color: #fff;
     -webkit-transition: background-color 300ms ease-out;
     -moz-transition: background-color 300ms ease-out;
     transition: background-color 300ms ease-out;
-    /*padding-top: 1.0625rem;
-    padding-bottom: 1rem;*/
     padding-top: 10px;
     padding-bottom: 10px;
     -webkit-appearance: none;
@@ -358,7 +352,7 @@ input[name='root[0][params][url]'] {width: 52%}
 }
 .slidebar li{
     text-align:center;
-    padding: 0x 0px;
+    padding: 0;
 }
 
 .admin-panel ul {
@@ -569,7 +563,7 @@ input[name='root[0][name]'], select[name='root[0][typeId]']{
 
 
 
-/* --- template home config layout --- */}
+/* --- template home config layout --- */
 
 #editor_holder div[data-schemapath="root"]  > h3 {
     display: block !important;
