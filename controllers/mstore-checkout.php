@@ -92,7 +92,7 @@ function setMstoreUserControllerPath($sDefaultPath)
     return dirname(__FILE__) . '/mstore-user.php';
 }
 
-function json_api_mstore_user_checkAuthCookie($sDefaultPath)
+function json_api_mstore_user_checkAuthCookie()
 {
     global $json_api;
 
