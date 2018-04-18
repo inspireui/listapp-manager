@@ -13,7 +13,9 @@
 <div id="head-full"><h1>ListApp Settings</h1></div>
 
 <?php
-if (isset($_POST['submit'])) {
+
+$nonce = $_REQUEST['_wpnonce'];
+if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
     $dataHome = $_POST['kqHome'];
     $dataMenu = $_POST['kqMenu'];
     $dataColor = $_POST['kqColor'];
@@ -41,6 +43,7 @@ if (isset($_POST['submit'])) {
 ?>
 
 <form method="post" class="frmSubmit">
+    <input type="hidden" name="_wpnonce" value="<?php wp_create_nonce('inspireuiteam') ?>" />
     <div class="admin-panel">
         <div class="slidebar">
             <ul>

@@ -343,7 +343,7 @@ if (isset($_GET['order'])):
 
                                             <?php do_action('woocommerce_checkout_after_customer_details'); ?>
 
-                                            <h3 id="order_review_heading"><?php _e('Your order', 'woocommerce'); ?></h3>
+                                            <h3 id="order_review_heading"><?php esc_html_e('Your order', 'woocommerce'); ?></h3>
 
                                             <?php do_action('woocommerce_checkout_before_order_review'); ?>
 
@@ -351,8 +351,8 @@ if (isset($_GET['order'])):
                                                 <table class="shop_table">
                                                     <thead>
                                                     <tr>
-                                                        <th class="product-name"><?php _e('Product', 'woocommerce'); ?></th>
-                                                        <th class="product-total"><?php _e('Total', 'woocommerce'); ?></th>
+                                                        <th class="product-name"><?php esc_html_e('Product', 'woocommerce'); ?></th>
+                                                        <th class="product-total"><?php esc_html_e('Total', 'woocommerce'); ?></th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -362,7 +362,7 @@ if (isset($_GET['order'])):
 
                                                         if ($_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters('woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key)) {
                                                             ?>
-                                                            <tr class="<?= esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>">
+                                                            <tr class="<?= esc_attr_e(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>">
                                                                 <td class="product-name">
                                                                     <?= apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key) . '&nbsp;'; ?>
                                                                     <?= apply_filters('woocommerce_checkout_cart_item_quantity', ' <strong class="product-quantity">' . sprintf('&times; %s', $cart_item['quantity']) . '</strong>', $cart_item, $cart_item_key); ?>
@@ -379,7 +379,7 @@ if (isset($_GET['order'])):
                                                     </tbody>
                                                     <tfoot>
                                                     <tr class="cart-subtotal">
-                                                        <th><?php _e('Subtotal', 'woocommerce'); ?></th>
+                                                        <th><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
                                                         <td><?php wc_cart_totals_subtotal_html(); ?></td>
                                                     </tr>
 
@@ -427,7 +427,7 @@ if (isset($_GET['order'])):
                                                     <?php endif; ?>
 
                                                     <tr class="order-total">
-                                                        <th><?php _e('Total', 'woocommerce'); ?></th>
+                                                        <th><?php esc_html_e('Total', 'woocommerce'); ?></th>
                                                         <td><?php wc_cart_totals_order_total_html(); ?></td>
                                                     </tr>
 
