@@ -180,7 +180,11 @@ if (isset($_POST['submit'])) {
                     if(is_array($item['params']) && count($item['params']) > 0){
                         echo "'params':";
                             echo "{'title': '". $item['name']. "',";
-                            echo "'id': ". $item['params']['id']."}";
+                            if($item['params']['id']){
+                                echo "'id': ". $item['params']['id']."}";
+                            }else{
+                                echo "}";
+                            }
                     }
                 }else{
                     echo "'{$k}':'{$item2}',";

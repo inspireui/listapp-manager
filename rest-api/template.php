@@ -6,10 +6,18 @@ class Template
 	protected $_template = 'listable'; // get_template
 	protected $_listable = 'listable';
 	protected $_listify = 'listify';
-	protected $_myListing = 'my-listing';
+	protected $_myListing = 'my listing';
 	protected $_isListable,  $_isListify, $_isMyListing;
 
 	public function __construct(){
+		$isChild = strstr(strtolower(wp_get_theme()), "child");
+		if($isChild == 'child'){
+			$string = explode(" ", wp_get_theme());
+			$this->_template = strtolower($string[0]) ;
+		}else{
+			$this->_template = strtolower(wp_get_theme());
+		}
+		
 	 	$this->_isListable = $this->_template == $this->_listable ? 1 : 0;
 		$this->_isListify = $this->_template == $this->_listify ? 1 : 0;
 		$this->_isMyListing = $this->_template == $this->_myListing ? 1 : 0;
@@ -23,7 +31,7 @@ class Template
 	 */
 	public function add_custom_type_to_rest_api()
 	{
-		global $wp_post_types, $wp_taxonomies;
+		global $wp_post_types, $wp_taxonomies, $post;
 	    if (isset($wp_post_types['job_listing'])) {
 	        $wp_post_types['job_listing']->show_in_rest = true;
 	        $wp_post_types['job_listing']->rest_base = 'job_listing';
@@ -56,7 +64,7 @@ class Template
 	    register_rest_field('job_listing_category',
 	        'term_image',
 	        array(
-	            'get_callback' => 'get_term_meta_image',
+	            'get_callback' => array($this, 'get_term_meta_image'),
 	            'update_callback' => null,
 	            'schema' => null,
 	        )
@@ -65,7 +73,7 @@ class Template
 	    register_rest_field('job_listing',
 	        'link_to_product',
 	        array(
-	            'get_callback' => 'get_product_id_linked',
+	            'get_callback' => array($this, 'get_product_id_linked'),
 	            'update_callback' => null,
 	            'schema' => null,
 	        )
@@ -77,7 +85,7 @@ class Template
 	    	register_rest_field('job_listing',
 		        'job_hours',
 		        array(
-		            'get_callback' => 'get_job_hours',
+		            'get_callback' => array($this, 'get_job_hours'),
 		            'update_callback' => null,
 		            'schema' => null,
 		        )
@@ -88,7 +96,7 @@ class Template
     	register_rest_field('job_listing',
 	        $this->_isListable ? 'gallery_images' : 'main_image_gallery' ,
 	        array(
-	            'get_callback' => $this->_isListable ? 'get_gallery_images_job_listing' : 'get_image_gallery',
+	            'get_callback' => array($this, $this->_isListable ? 'get_gallery_images_job_listing' : 'get_image_gallery'),
 	            'update_callback' => null,
 	            'schema' => null,
 	        )
@@ -98,7 +106,7 @@ class Template
 	    register_rest_field('job_listing',
 	        'comments_ratings',
 	        array(
-	            'get_callback' => 'get_comments_ratings',
+	            'get_callback' => array($this, 'get_comments_ratings'),
 	            'update_callback' => null,
 	            'schema' => null,
 	        )
@@ -108,27 +116,27 @@ class Template
 	    register_rest_field('job_listing',
 	        'listing_data',
 	        array(
-	            'get_callback' => 'get_post_meta_for_api',
+	            'get_callback' => array($this, 'get_post_meta_for_api'),
 	            'schema' => null,
 	        )
 	    );
 
 	    register_rest_route('wp/v2', '/getRating/(?P<id>\d+)', array(
 	        'methods' => 'GET',
-	        'callback' => 'get_rating',
+	        'callback' => array($this, 'get_rating'),
 	    ));
 
 	    register_rest_field('job_listing',
 	        'cost',
 	        array(
-	            'get_callback' => 'get_cost_for_booking',
+	            'get_callback' => array($this, 'get_cost_for_booking'),
 	            'schema' => null,
 	        )
 	    );
 
 
 	}
- 
+
  	/* Meta Fields Rest API */
 	/**
 	 * Get term meta images
@@ -137,7 +145,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	protected function get_term_meta_image($object, $field_name, $request)
+	public function get_term_meta_image($object, $field_name, $request)
 	{
 
 		if($this->_isListable){
@@ -158,7 +166,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	protected function get_product_id_linked($object, $field_name, $request)
+	public function get_product_id_linked($object, $field_name, $request)
 	{
 	    $product_id = get_post_meta($object['id'], '_products', true);
 	    return $product_id;
@@ -171,11 +179,11 @@ class Template
 	 * @param $request
 	 * @return array
 	 */
-	protected function get_gallery_images_job_listing($object, $field_name, $request)
+	public function get_gallery_images_job_listing($object, $field_name, $request)
 	{
 	    $arr_images = array();
-
 	    $gallery = get_post_meta($object['id'], 'main_image', true);
+
 	    $gallery = explode(",", $gallery);
 	    foreach ($gallery as $k => $value):
 	        $image = wp_get_attachment_image_src($value, 'listable-featured-image');
@@ -220,10 +228,10 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	protected function get_image_gallery($object, $field_name, $request)
+	public function get_image_gallery($object, $field_name, $request)
 	{
-		$name = $this->_isListable ? '_gallery_images' : '_job_gallery';
-	    $gallery = get_post_meta($object['id'], '_gallery_images', true);
+		$name = $this->_isListify ? '_gallery_images' : '_job_gallery';
+	    $gallery = get_post_meta($object['id'], $name, true);
 	    return $gallery;
 	}
 
@@ -235,7 +243,7 @@ class Template
 	 * @param $request
 	 * @return array|bool
 	 */
-	protected function get_comments_ratings($object, $field_name, $request)
+	public function get_comments_ratings($object, $field_name, $request)
 	{
 		$meta_key = $commentKey = 'pixrating';
 
@@ -281,7 +289,7 @@ class Template
 	 * @param $object
 	 * @return mixed
 	 */
-	protected function get_post_meta_for_api($object)
+	public function get_post_meta_for_api($object)
 	{
 	    $post_id = $object['id'];
 	    return get_post_meta($post_id);
@@ -292,7 +300,7 @@ class Template
 	 * @param WP_REST_Request $request
 	 * @return WP_REST_Response
 	 */
-	protected function get_rating(WP_REST_Request $request)
+	public function get_rating(WP_REST_Request $request)
 	{
 		$name = 'pixrating';
 		if($this->_isListify){
@@ -313,7 +321,7 @@ class Template
 	 * @param $request
 	 * @return string|void
 	 */
-	protected function get_cost_for_booking($object, $field_name, $request)
+	public function get_cost_for_booking($object, $field_name, $request)
 	{
 	    $currency = get_option('woocommerce_currency');
 	    $product_id = get_post_meta($object['id'], '_products', true);
@@ -348,7 +356,7 @@ class Template
 	 * @param $request
 	 * @return mixed
 	 */
-	protected function get_job_hours($object, $field_name, $request)
+	public function get_job_hours($object, $field_name, $request)
 	{
 	    $_job_hours = get_post_meta($object['id'], '_job_hours', true);
 	    return $_job_hours;
