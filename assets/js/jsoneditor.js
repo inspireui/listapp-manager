@@ -6200,6 +6200,8 @@ JSONEditor.AbstractTheme = Class.extend({
     var el = this.getFormInputField('checkbox');
     el.style.display = 'inline-block';
     el.style.width = 'auto';
+    el.style.marginRight = '10px';
+    el.style.marginTop = '15px';
     return el;
   },
   getMultiCheckboxHolder: function(controls,label,description) {

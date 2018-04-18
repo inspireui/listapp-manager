@@ -43,7 +43,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
 ?>
 
 <form method="post" class="frmSubmit">
-    <input type="hidden" name="_wpnonce" value="<?php wp_create_nonce('inspireuiteam') ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('inspireuiteam') ?>" />
     <div class="admin-panel">
         <div class="slidebar">
             <ul>
@@ -366,12 +366,8 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     },
                     "paging": {
                         "title": "Paging",
-                        "type": "string",
-                        "enum": ['', 1, 0],
-                        'options': {
-                            'enum_titles': ['Choose', 'True', 'False'],
-                        },
-                        'default': '',
+                        "type": "boolean",
+                        "format": "checkbox",
                         'description': 'Select Yes if the scroll is set as sticky ',
                     },
                     "row": {
@@ -656,10 +652,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     'title': 'Facebook',
                     'properties': {
                         'visible': {
-                            'type': 'string',
-                            'title': 'Visible',
-                            'enum': ['true', 'false'],
-                            'default': 'false',
+                            "title": "Visible",
+                            "type": "boolean",
+                            "format": "checkbox",
                         },
                         'adPlacementID': {
                             'type': 'string',
@@ -682,10 +677,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     'title': 'AdMob',
                     'properties': {
                         'visible': {
-                            'type': 'string',
-                            'title': 'Visible',
-                            'enum': ['true', 'false'],
-                            'default': 'false',
+                            "title": "Visible",
+                            "type": "boolean",
+                            "format": "checkbox",
                         },
                         'deviceID': {
                             'type': 'string',
@@ -700,10 +694,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                             'title': 'UnitInterstitial',
                         },
                         'isShowInterstital': {
-                            'type': 'string',
                             'title': 'Show Interstital',
-                            'enum': ['true', 'false'],
-                            'default': 'false',
+                            "type": "boolean",
+                            "format": "checkbox",
 
                         }
                     }

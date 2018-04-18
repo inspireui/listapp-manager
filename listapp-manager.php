@@ -153,17 +153,17 @@ class ListAppSetting
                         'readlaterTable'=> 'list_readlater',
                 ],
                 "Facebook" => (Object)[
-                        'visible'=> 'false',
+                        'visible'=> false,
                         'adPlacementID'=> '1809822172592320_1981610975413438',
                         'logInID'=> '1809822172592320',
                         'sizeAds'=> 'standard', // standard, large
                 ],
                 "AdMob" => (Object)[
-                        'visible'=> 'false',
+                        'visible'=> false,
                         'deviceID'=> 'pub-2101182411274198',
                         'unitID'=> 'ca-app-pub-2101182411274198/8802887662',
                         'unitInterstitial'=> 'ca-app-pub-2101182411274198/7326078867',
-                        'isShowInterstital'=> 'true',
+                        'isShowInterstital'=> true,
                 ]
             ],
         ];
