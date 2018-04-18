@@ -184,9 +184,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         echo "'params':";
                             echo "{'title': '". $item['name']. "',";
                             if($item['params']['id']){
-                                echo "'id': ". $item['params']['id']."}";
+                                echo "'id': ". $item['params']['id']."},";
                             }else{
-                                echo "}";
+                                echo "},";
                             }
                     }
                 }else{
