@@ -164,10 +164,12 @@ class JSON_API_MStore_User_Controller
     {
 
         global $json_api;
-
-        foreach ($_POST as $k => $val) {
-            if (isset($_POST[$k])) {
-                $json_api->query->$k = $val;
+        $nonce = $json_api->query->nonce;
+        if($nonce == 'inspireui_team'){
+            foreach ($_POST as $k => $val) {
+                if (isset($_POST[$k])) {
+                    $json_api->query->$k = $val;
+                }
             }
         }
 
