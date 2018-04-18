@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <title>ListApp Setting</title>
-    <script src="<?php echo LISTAPP_SETTING_PLUGIN_URL ?>assets/js/jsoneditor.js"></script>
-    <link href="<?php echo LISTAPP_SETTING_PLUGIN_URL ?>assets/css/listapp-setting-style.css" rel="stylesheet"
+    <script src="<?php echo esc_html(LISTAPP_SETTING_PLUGIN_URL."assets/js/jsoneditor.js") ?>"></script>
+    <link href="<?php echo esc_html(LISTAPP_SETTING_PLUGIN_URL."assets/css/listapp-setting-style.css") ?>" rel="stylesheet"
           type="text/css"/>
-    <script src="<?php echo LISTAPP_SETTING_PLUGIN_URL ?>assets/js/listapp-setting-custom.js"></script>
+    <script src="<?php echo esc_html(LISTAPP_SETTING_PLUGIN_URL."assets/js/listapp-setting-custom.js") ?>"></script>
 </head>
 <body>
 
@@ -43,7 +43,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
 ?>
 
 <form method="post" class="frmSubmit">
-    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('inspireuiteam') ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce(esc_html('inspireuiteam')) ?>" />
     <div class="admin-panel">
         <div class="slidebar">
             <ul>

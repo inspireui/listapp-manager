@@ -130,7 +130,7 @@ class PageTemplater
         if (file_exists($file)) {
             return $file;
         } else {
-            echo $file;
+            echo esc_html($file);
         }
         // Return template
         return $template;
@@ -140,8 +140,8 @@ class PageTemplater
         global $wpdb;
         $table_insert = $wpdb->prefix . "posts";
         $join_table = $wpdb->prefix . "postmeta";
-        $sql = "SELECT * FROM $table_insert AS p INNER JOIN $join_table AS meta ON p.ID = meta.post_id WHERE post_type = 'page' AND post_status='publish' AND (meta_value = 'checkout.php' OR meta_key = '_mstore_checkout_template')";
-        $result = $wpdb->query($wpdb->prepare($sql),OBJECT);
+        $where = $wpdb->prepare("WHERE post_type ='%s' AND post_status='%s' AND (meta_value = '%s' OR meta_key = '%s'", 'page', 'publish', 'checkout.php', '_mstore_checkout_template');
+        $result = $wpdb->query($wpdb->prepare("SELECT * FROM $table_insert AS p INNER JOIN $join_table AS meta ON p.ID = meta.post_id $where)"), OBJECT);
         if(empty($result)){
             $pageguid = site_url() . "/mstore-checkout";
             // Create post object
