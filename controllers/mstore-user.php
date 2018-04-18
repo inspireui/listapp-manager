@@ -164,8 +164,7 @@ class JSON_API_MStore_User_Controller
     {
 
         global $json_api;
-        $nonce = $json_api->query->nonce;
-        if($nonce == 'inspireui_team'){
+        if(wp_verify_nonce($json_api->query->nonce, "inspireui")){
             foreach ($_POST as $k => $val) {
                 if (isset($_POST[$k])) {
                     $json_api->query->$k = $val;
