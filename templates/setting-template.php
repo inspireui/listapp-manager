@@ -43,7 +43,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
 ?>
 
 <form method="post" class="frmSubmit">
-    <input type="hidden" name="_wpnonce" value="<?php echo sanitize_text_field(wp_create_nonce('inspireuiteam')) ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo esc_html(wp_create_nonce('inspireuiteam')) ?>" />
     <div class="admin-panel">
         <div class="slidebar">
             <ul>
@@ -166,7 +166,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
             foreach ($horizontalLayout as $item):
                 echo "{";
                 foreach ($item as $k => $item2):
-                    echo "'" . $k . "': '" . $item2 . "',";
+                    echo esc_html("'" . $k . "': '" . $item2 . "',");
                 endforeach;
                 echo "},\n";
             endforeach;
@@ -182,15 +182,15 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                 if($k == 'params'){
                     if(is_array($item['params']) && count($item['params']) > 0){
                         echo "'params':";
-                            echo "{'title': '". $item['name']. "',";
+                            echo esc_html("{'title': '". $item['name']. "',");
                             if($item['params']['id']){
-                                echo "'id': ". $item['params']['id']."},";
+                                echo esc_html("'id': ". $item['params']['id']."},");
                             }else{
                                 echo "},";
                             }
                     }
                 }else{
-                    echo "'{$k}':'{$item2}',";
+                    echo esc_html("'{$k}':'{$item2}',");
                 }
             endforeach;
             echo "},\n";
@@ -254,7 +254,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     'options': {
                         'enum_titles': ['Horizontal', 'Vertical', 'Mansory']
                     },
-                    'default': <?php echo $homepageLayout ? $homepageLayout : 1?>,
+                    'default': <?php echo esc_html($homepageLayout ? $homepageLayout : 1) ?>,
                     'title': 'Home Layout',
                 },
                 "verticalLayout": {
@@ -269,7 +269,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                             "Listing Align Left", "Listing Align Right"
                         ]
                     },
-                    'default': <?php echo $verticalLayout ? $verticalLayout : 1?>,
+                    'default': <?php echo esc_html($verticalLayout ? $verticalLayout : 1) ?>,
                 }
             }
             ,
@@ -317,11 +317,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "title": "Type",
                         "type": "string",
                         'enum': ['', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
-                            echo esc_html($item->term_id) . ", ";
+                            echo esc_html($item->term_id . ", ");
                         endforeach;?>],
                         'options': {
                             'enum_titles': ['Choose', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
-                                echo "'" . esc_html($item->name) . "', ";
+                                echo esc_html("'" $item->name . "', ");
                             endforeach;?>]
                         },
                         'default': '',
@@ -332,11 +332,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "type": "number",
                         "description": 'Optional, select this value if the Compoent is Listing',
                         'enum': ['', <?php $terms = get_terms('job_listing_category'); foreach ($terms as $item):
-                            echo esc_html($item->term_id) . ", ";
+                            echo esc_html($item->term_id . ", ");
                         endforeach;?>],
                         'options': {
                             'enum_titles': ['Choose', <?php $terms = get_terms('job_listing_category'); foreach ($terms as $item):
-                                echo "'" . esc_html($item->name) . "', ";
+                                echo esc_html("'" . $item->name . "', ");
                             endforeach;?>]
                         },
                         'default': '',
@@ -346,11 +346,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "type": "number",
                         "description": 'Optional,  selected this value if the Component is News',
                         'enum': ['', <?php $terms = get_categories(array('exclude' => 1)); foreach ($terms as $item):
-                            echo $item->term_id . ", ";
+                            echo esc_html($item->term_id . ", ");
                         endforeach;?>],
                         'options': {
                             'enum_titles': ['Choose', <?php $terms = get_categories(array('exclude' => 1)); foreach ($terms as $item):
-                                echo "'" . $item->name . "', ";
+                                echo esc_html("'" . $item->name . "', ");
                             endforeach;?>]
                         },
                     },
@@ -584,11 +584,11 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                 if (is_object($item)) {
                     echo "'" . $kPrev . "': {\n";
                     foreach ($item as $k => $item2):
-                        echo "'" . $k . "': '" . $item2 . "', \n";
+                        echo esc_html("'" . $k . "': '" . $item2 . "', \n");
                     endforeach;
-                    echo "}, \n";
+                    echo esc_html("}, \n");
                 } else {
-                    echo "'" . $kPrev . "': '{$item}', \n";
+                    echo esc_html("'" . $kPrev . "': '{$item}', \n");
                 }
                 // echo "},\n";
             endforeach;
