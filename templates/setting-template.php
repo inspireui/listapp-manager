@@ -230,7 +230,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                             "Listing Align Left", "Listing Align Right"
                         ]
                     },
-                    'default': <?php echo $verticalLayout ? $verticalLayout : 1?>,
+                    'default': <?php echo esc_html($verticalLayout ? $verticalLayout : 1) ?>,
                 }
             }
           
@@ -582,7 +582,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
             foreach ($color as $kPrev => $item):
 
                 if (is_object($item)) {
-                    echo "'" . $kPrev . "': {\n";
+                    echo esc_html("'" . $kPrev . "': {\n");
                     foreach ($item as $k => $item2):
                         echo esc_html("'" . $k . "': '" . $item2 . "', \n");
                     endforeach;
@@ -710,9 +710,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
         startval: {
             <?php
             foreach ($general as $kPrev => $item):
-                echo "'" . $kPrev . "': {";
+                echo esc_html("'" . $kPrev . "': {");
                 foreach ($item as $k => $item2):
-                    echo "'" . $k . "': '" . $item2 . "',";
+                    echo esc_html("'" . $k . "': '" . $item2 . "',");
                 endforeach;
                 echo "},\n";
             endforeach;
@@ -923,40 +923,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
             }else{
                 return false;
             }
-            // editorTemplate.setValue({
-            //     homepageLayout : <?php //echo $homepageLayout; ?>,
-            //     verticalLayout : <?php //echo $homepageLayout; ?>,
-            // });
-            // editor.setValue(starting_value);
-            // editorMenu.setValue(starting_Menu);
-            // editorColor.setValue({
-            //     <?php
-            //     foreach ($color as $kPrev => $item):
-
-            //         if (is_object($item)) {
-            //             echo "'" . $kPrev . "': {\n";
-            //             foreach ($item as $k => $item2):
-            //                 echo "'" . $k . "': '" . $item2 . "', \n";
-            //             endforeach;
-            //             echo "}, \n";
-            //         } else {
-            //             echo "'" . $kPrev . "': '{$item}', \n";
-            //         }
-            //         // echo "},\n";
-            //     endforeach;
-            //     ?>
-            // });
-            // editorGeneral.setValue({
-            //     <?php
-            //     foreach ($general as $kPrev => $item):
-            //         echo "'" . $kPrev . "': {";
-            //         foreach ($item as $k => $item2):
-            //             echo "'" . $k . "': '" . $item2 . "',";
-            //         endforeach;
-            //         echo "},\n";
-            //     endforeach;
-            //     ?>
-            // });
+         
         });
 
         jQuery('div[data-schemapath="root.verticalLayout"').css('display', 'none');
