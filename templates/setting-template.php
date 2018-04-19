@@ -14,7 +14,7 @@
 
 <?php
 
-$nonce = isset($_POST['_wpnonce']) ? $_POST['_wpnonce'] : '';
+$nonce = $_POST['_wpnonce'];
 if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
     $dataHome = sanitize_text_field($_POST['kqHome']);
     $dataMenu = sanitize_text_field($_POST['kqMenu']);
@@ -558,7 +558,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     endforeach;
                     echo "}, \n";
                 } else {
-                    echo "'" . esc_html($kPrev) . "': '{$item}', \n";
+                    echo "'" . esc_html($kPrev) . "': '". esc_html($item)."' \n";
                 }
                 // echo "},\n";
             endforeach;
