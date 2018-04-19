@@ -14,7 +14,7 @@
 
 <?php
 
-$nonce = $_POST['_wpnonce'];
+$nonce = sanitize_text_field($_POST['_wpnonce']);
 if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
     $dataHome = sanitize_text_field($_POST['kqHome']);
     $dataMenu = sanitize_text_field($_POST['kqMenu']);
