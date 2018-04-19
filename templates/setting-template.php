@@ -16,15 +16,15 @@
 
 $nonce = isset($_POST['_wpnonce']) ? $_POST['_wpnonce'] : '';
 if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
-    $dataHome = $_POST['kqHome'];
-    $dataMenu = $_POST['kqMenu'];
-    $dataColor = $_POST['kqColor'];
-    $dataGeneral = $_POST['kqGeneral'];
+    $dataHome = sanitize_text_field($_POST['kqHome']);
+    $dataMenu = sanitize_text_field($_POST['kqMenu']);
+    $dataColor = sanitize_text_field($_POST['kqColor']);
+    $dataGeneral = sanitize_text_field($_POST['kqGeneral']);
     // print_r(json_decode(stripcslashes($dataHome), true));
-    $homepageLayoutSave = json_decode(stripcslashes($_POST['kqHome']), true);
-    $menuSave = json_decode(stripcslashes($_POST['kqMenu']), true);
-    $colorSave = json_decode(stripcslashes($_POST['kqColor']), true);
-    $generalSave = json_decode(stripcslashes($_POST['kqGeneral']), true);
+    $homepageLayoutSave = json_decode(stripcslashes($dataHome), true);
+    $menuSave = json_decode(stripcslashes($dataMenu), true);
+    $colorSave = json_decode(stripcslashes($dataColor), true);
+    $generalSave = json_decode(stripcslashes($dataGeneral), true);
     // echo "<pre>";
     // print_r($homepageLayoutSave);
     // echo "</pre>";
