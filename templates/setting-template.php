@@ -558,9 +558,9 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     endforeach;
                     echo "}, \n";
                 } else {
-                    echo "'" . esc_html($kPrev) . "': '". esc_html($item)."' \n";
+                    echo "'" . esc_html($kPrev) . "': '". esc_html($item)."', \n";
                 }
-                // echo "},\n";
+                
             endforeach;
             ?>
         },
