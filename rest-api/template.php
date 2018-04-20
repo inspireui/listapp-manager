@@ -7,9 +7,12 @@ class Template extends WP_REST_Posts_Controller
 	protected $_listable = 'listable';
 	protected $_listify = 'listify';
 	protected $_myListing = 'my listing';
+
+	protected $_customPostType = ['job_listing']; // all custom post type
 	protected $_isListable,  $_isListify, $_isMyListing;
 
 	public function __construct(){
+		parent::__construct('job_listing');
 		$isChild = strstr(strtolower(wp_get_theme()), "child");
 		if($isChild == 'child'){
 			$string = explode(" ", wp_get_theme());
@@ -70,6 +73,73 @@ class Template extends WP_REST_Posts_Controller
 	        )
 	    );
 
+
+	    register_rest_field($this->_customPostType,
+	        'link_to_product',
+	        array(
+	            'get_callback' => array($this, 'get_product_id_linked'),
+	            'update_callback' => null,
+	            'schema' => null,
+	        )
+	    );
+
+	    
+	    /* --- meta field for gallery image --- */
+	    if($this->_isListify){
+	    	register_rest_field($this->_customPostType,
+		        'job_hours',
+		        array(
+		            'get_callback' => array($this, 'get_job_hours'),
+		            'update_callback' => null,
+		            'schema' => null,
+		        )
+		    );
+
+	    }
+
+    	register_rest_field($this->_customPostType,
+	        $this->_isListable ? 'gallery_images' : 'main_image_gallery' ,
+	        array(
+	            'get_callback' => array($this, $this->_isListable ? 'get_gallery_images_job_listing' : 'get_image_gallery'),
+	            'update_callback' => null,
+	            'schema' => null,
+	        )
+	    );
+	    
+
+	    register_rest_field($this->_customPostType,
+	        'comments_ratings',
+	        array(
+	            'get_callback' => array($this, 'get_comments_ratings'),
+	            'update_callback' => null,
+	            'schema' => null,
+	        )
+	    );
+
+
+	    register_rest_field($this->_customPostType,
+	        'listing_data',
+	        array(
+	            'get_callback' => array($this, 'get_post_meta_for_api'),
+	            'schema' => null,
+	        )
+	    );
+
+
+	    register_rest_field($this->_customPostType,
+	        'cost',
+	        array(
+	            'get_callback' => array($this, 'get_cost_for_booking'),
+	            'schema' => null,
+	        )
+	    );
+
+	    /* Register for custom routes to rest API */
+	    register_rest_route('wp/v2', '/getRating/(?P<id>\d+)', array(
+	        'methods' => 'GET',
+	        'callback' => array($this, 'get_rating'),
+	    ));
+
 	    // case for myListing with job_listing_type
 	    if($this->_isMyListing){
 		    register_rest_route( 'listing/v2', '/job_listing', array(
@@ -84,70 +154,6 @@ class Template extends WP_REST_Posts_Controller
 				),
 			) );
 		}
-
-	    register_rest_field('job_listing',
-	        'link_to_product',
-	        array(
-	            'get_callback' => array($this, 'get_product_id_linked'),
-	            'update_callback' => null,
-	            'schema' => null,
-	        )
-	    );
-
-	    
-	    /* --- meta field for gallery image --- */
-	    if($this->_isListify){
-	    	register_rest_field('job_listing',
-		        'job_hours',
-		        array(
-		            'get_callback' => array($this, 'get_job_hours'),
-		            'update_callback' => null,
-		            'schema' => null,
-		        )
-		    );
-
-	    }
-
-    	register_rest_field('job_listing',
-	        $this->_isListable ? 'gallery_images' : 'main_image_gallery' ,
-	        array(
-	            'get_callback' => array($this, $this->_isListable ? 'get_gallery_images_job_listing' : 'get_image_gallery'),
-	            'update_callback' => null,
-	            'schema' => null,
-	        )
-	    );
-	    
-
-	    register_rest_field('job_listing',
-	        'comments_ratings',
-	        array(
-	            'get_callback' => array($this, 'get_comments_ratings'),
-	            'update_callback' => null,
-	            'schema' => null,
-	        )
-	    );
-
-
-	    register_rest_field('job_listing',
-	        'listing_data',
-	        array(
-	            'get_callback' => array($this, 'get_post_meta_for_api'),
-	            'schema' => null,
-	        )
-	    );
-
-	    register_rest_route('wp/v2', '/getRating/(?P<id>\d+)', array(
-	        'methods' => 'GET',
-	        'callback' => array($this, 'get_rating'),
-	    ));
-
-	    register_rest_field('job_listing',
-	        'cost',
-	        array(
-	            'get_callback' => array($this, 'get_cost_for_booking'),
-	            'schema' => null,
-	        )
-	    );
 
 
 	}
@@ -377,13 +383,18 @@ class Template extends WP_REST_Posts_Controller
 	    return $_job_hours;
 	}
 
+
+	public function protected_title_format() {
+		return '%s';
+	}
+
 	public function prepare_item_for_response( $post, $request ) {
 		$GLOBALS['post'] = $post;
 
 		setup_postdata( $post );
 
 		$schema = $this->get_item_schema();
-
+		$this->add_additional_fields_schema($schema);
 		// Base fields for every post.
 		$data = array();
 
@@ -454,6 +465,7 @@ class Template extends WP_REST_Posts_Controller
 		}
 
 		if ( ! empty( $schema['properties']['title'] ) ) {
+
 			add_filter( 'protected_title_format', array( $this, 'protected_title_format' ) );
 
 			$data['title'] = array(
