@@ -12,7 +12,9 @@ class Template extends WP_REST_Posts_Controller
 	protected $_isListable,  $_isListify, $_isMyListing;
 
 	public function __construct(){
+		/* extends from parent */
 		parent::__construct('job_listing');
+		
 		$isChild = strstr(strtolower(wp_get_theme()), "child");
 		if($isChild == 'child'){
 			$string = explode(" ", wp_get_theme());

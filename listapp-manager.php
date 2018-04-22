@@ -33,7 +33,7 @@ class ListAppSetting
     public function __construct()
     {
         define('LISTAPP_SETTING', $this->version);
-        define('PLUGIN_FILE', __FILE__);
+        define('LISTAPP_PLUGIN_FILE', __FILE__);
 
         //extra for define constants
         define('LISTAPP_SETTING_VERSION', '1.0.0');

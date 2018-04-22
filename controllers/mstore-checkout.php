@@ -5,7 +5,7 @@
   Controller description: Controller that extend from Mstore User
   Controller Author: InspireUI
 */
-
+use JO\Module\Templater;
 class MstoreCheckOut
 {
     public $version = '1.0.0';
@@ -13,7 +13,7 @@ class MstoreCheckOut
     public function __construct()
     {
         define('LISTAPP_MANAGER_VERSION', $this->version);
-        define('PLUGIN_FILE', __FILE__);
+        define('LISTAPP_PLUGIN_FILE', __FILE__);
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
         if (is_plugin_active('woocommerce/woocommerce.php') == false) {
             return 0;
@@ -29,7 +29,7 @@ class MstoreCheckOut
         if (is_order_received_page()) {
             $detect = new Mobile_Detect;
             if ($detect->isMobile()) {
-                wp_register_style('mstore-order-custom-style', plugins_url('assets/css/mstore-order-style.css', PLUGIN_FILE));
+                wp_register_style('mstore-order-custom-style', plugins_url('assets/css/mstore-order-style.css', LISTAPP_PLUGIN_FILE));
                 wp_enqueue_style('mstore-order-custom-style');
 
                 // default return true for getting checkout library working
@@ -43,7 +43,6 @@ class MstoreCheckOut
 
 $mstoreCheckOut = new MstoreCheckOut();
 
-use JO\Module\Templater\Templater;
 
 add_action('plugins_loaded', 'load_templater');
 function load_templater()
