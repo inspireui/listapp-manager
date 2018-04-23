@@ -13,6 +13,21 @@
 <div id="head-full"><h1>ListApp Settings</h1></div>
 
 <?php
+$isChild = strstr(strtolower(wp_get_theme()), "child");
+if($isChild == 'child'){
+    $string = explode(" ", wp_get_theme());
+    $currentTemplate = strtolower($string[0]) ;
+}else{
+    $currentTemplate = strtolower(wp_get_theme());
+}
+
+$typeJobListing  = 'job_listing_type';
+if($currentTemplate == 'listify'){
+    $typeJobListing = 'job_listing_region';
+}else{
+    $typeJobListing = 'region';
+}
+
 
 $nonce = sanitize_text_field($_POST['_wpnonce']);
 if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
@@ -286,16 +301,30 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                     "typeId": {
                         "title": "Type",
                         "type": "string",
-                        'enum': ['', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
+                        'enum': ['', <?php $terms = get_terms($typeJobListing); foreach ($terms as $item):
                             echo esc_html($item->term_id). ", ";
                         endforeach;?>],
                         'options': {
-                            'enum_titles': ['Choose', <?php $terms = get_terms('job_listing_type'); foreach ($terms as $item):
+                            'enum_titles': ['Choose', <?php $terms = get_terms($typeJobListing); foreach ($terms as $item):
                                 echo "'" . esc_html($item->name) . "', ";
                             endforeach;?>]
                         },
                         'default': '',
                         'description': 'Select this value if the is Listing ',
+                    },
+                    "tags": {
+                        "title": "Tags",
+                        "type": "string",
+                        'enum': ['', <?php $terms = get_terms('case27_job_listing_tags'); foreach ($terms as $item):
+                            echo esc_html($item->term_id). ", ";
+                        endforeach;?>],
+                        'options': {
+                            'enum_titles': ['Choose', <?php $terms = get_terms('case27_job_listing_tags'); foreach ($terms as $item):
+                                echo "'" . esc_html($item->name) . "', ";
+                            endforeach;?>]
+                        },
+                        'default': '',
+                        'description': 'Only apply for myListing theme',
                     },
                     "categoryListingId": {
                         "title": "Category Listing",
