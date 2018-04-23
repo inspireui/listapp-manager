@@ -153,6 +153,16 @@ class Template extends WP_REST_Posts_Controller
 							return is_string( $param );
 						}
 					),
+					'page' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+					'limit' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
 				),
 			) );
 		}
@@ -627,6 +637,8 @@ class Template extends WP_REST_Posts_Controller
 			'meta_key' => '_case27_listing_type',
 			'meta_value' => $request['type'],
 			'post_type' => 'job_listing',
+			'paged' => $request['page'],
+			'posts_per_page' => $request['limit']
 		) );
 
 		$data = array();
