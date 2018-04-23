@@ -24,7 +24,7 @@ if($isChild == 'child'){
 $typeJobListing  = 'job_listing_type';
 if($currentTemplate == 'listify'){
     $typeJobListing = 'job_listing_region';
-}else{
+}else if($currentTemplate == 'my listing'){
     $typeJobListing = 'region';
 }
 
