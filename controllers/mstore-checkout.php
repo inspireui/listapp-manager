@@ -5,7 +5,7 @@
   Controller description: Controller that extend from Mstore User
   Controller Author: InspireUI
 */
-use JO\Module\Templater;
+use JO\Module\Templater\Templater;
 class MstoreCheckOut
 {
     public $version = '1.0.0';

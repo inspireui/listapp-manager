@@ -600,6 +600,7 @@ class Template extends WP_REST_Posts_Controller
 	 * @param WP_REST_Response $response Response object.
 	 * @return array Response data, ready for insertion into collection data.
 	 */
+	
 	public function prepare_response_for_collection( $response ) {
 		if ( ! ( $response instanceof WP_REST_Response ) ) {
 			return $response;
