@@ -45,10 +45,7 @@ class Template extends WP_REST_Posts_Controller
 
 
 	    //be sure to set this to the name of your taxonomy!
-	    $taxonomy_name = array('job_listing_category', 'job_listing_type',
-	    	'job_listing_region', // case for listify
-	    	'case27_job_listing_tags', // case for mylisting
-		);
+	    $taxonomy_name = array('job_listing_category', 'job_listing_type', 'job_listing_region');
 	    if (isset($wp_taxonomies)) {
 	        foreach ($taxonomy_name as $k => $name):
 	            if (isset($wp_taxonomies[$name])) {
@@ -144,7 +141,39 @@ class Template extends WP_REST_Posts_Controller
 
 	    // case for myListing with job_listing_type
 	    if($this->_isMyListing){
-		    register_rest_route( 'listing/v2', '/job_listing', array(
+
+	    	register_rest_field($this->_customPostType,
+		        'case27_job_listing_tags',
+		        array(
+		            'get_callback' => array($this, 'get_job_listing_tags'),
+		        )
+		    );
+
+	    	/* get listing by tags for case myListing */
+		    register_rest_route( 'tags/v1', '/job_listing', array(
+				'methods' => 'GET',
+				'callback' => array($this, 'get_job_listing_by_tags'),
+				'args' => array(
+					'tag' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+					'page' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+					'limit' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+				),
+			) );
+
+		    // get by listing tools case for myListing theme
+		    register_rest_route( 'listing/v1', '/job_listing', array(
 				'methods' => 'GET',
 				'callback' => array($this, 'get_job_listing_by_type'),
 				'args' => array(
@@ -393,6 +422,31 @@ class Template extends WP_REST_Posts_Controller
 	{
 	    $_job_hours = get_post_meta($object['id'], '_job_hours', true);
 	    return $_job_hours;
+	}
+
+	public function get_job_listing_by_tags($request){
+	    $posts = query_posts( array(
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'case27_job_listing_tags',
+					'field'    => 'term_id',
+					'terms'    => array($request['tag']),
+				),
+			),
+			'post_type' => 'job_listing',
+			'paged' => $request['page'],
+			'posts_per_page' => $request['limit']
+		) );
+
+		$data = array();
+		$items = (array)($posts);
+		
+		foreach($items as $item):
+			$itemdata = $this->prepare_item_for_response( $item , $request);
+			$data[] = $this->prepare_response_for_collection( $itemdata );
+		endforeach;
+
+		return new WP_REST_Response( $data, 200 );
 	}
 
 
