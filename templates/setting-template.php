@@ -287,10 +287,10 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
                         "title": "Layout",
                         "type": "number",
                         "format": 'object',
-                        "enum": [1, 2, 3, 4, 5, 9, 11, 12],
+                        "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9],
                         "options": {
                             "enum_titles": [
-                                "Card", 'Banner',
+                                "Card", "Card Trend", 'Banner',
                                 "One Column", "Two Column", "Three Column",  "Flexible Column",
                                 "Listing Align Left", "Listing Align Right"
                             ]
