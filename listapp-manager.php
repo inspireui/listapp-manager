@@ -26,6 +26,9 @@ class ListAppSetting
     protected $_routeApi = 'inspireui/v1';
     protected $_routeApiUrl = 'config';
 
+    protected $_slugOS = 'push-notification';
+    protected $_pageTitleOS = 'Push Notification';
+    protected $_menuTitleOS = 'Push Notification';
     /*
     * ListAppSetting constructor
     */
@@ -48,6 +51,12 @@ class ListAppSetting
                           'manage_options', $this->_slugPage,
                           array($this, 'display_setting'), 
                           'dashicons-location');
+            add_submenu_page($this->_slugPage,
+                          $this->_pageTitleOS, 
+                          $this->_menuTitleOS,
+                          'manage_options',
+                          $this->_slugOS,
+                          array($this, 'output_pushNotification'));
 
         });
 
@@ -65,6 +74,12 @@ class ListAppSetting
         //autoload templates 
         $this->load_layout();
         $this->set_config_default();
+    }
+
+
+
+    public function output_pushNotification(){
+        require_once LISTAPP_SETTING_PLUGIN_PATH . '/templates/push-notification.php';
     }
 
     /**

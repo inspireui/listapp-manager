@@ -45,26 +45,28 @@ $mstoreCheckOut = new MstoreCheckOut();
 
 
 add_action('plugins_loaded', 'load_templater');
-function load_templater()
-{
-    // add our new custom templates
-    $my_templater = new Templater(
-        array(
-            // YOUR_PLUGIN_DIR or plugin_dir_path(__FILE__)
-            'plugin_directory' => plugin_dir_path(__FILE__),
-            // should end with _ > prefix_
-            'plugin_prefix' => 'plugin_prefix_',
-            // templates directory inside your plugin
-            'plugin_template_directory' => 'templates',
-        )
-    );
-    $my_templater->add(
-        array(
-            'page' => array(
-                'checkout.php' => 'Page Custom Template',
-            ),
-        )
-    )->register();
+if(!function_exists('load_templater')){
+    function load_templater()
+    {
+        // add our new custom templates
+        $my_templater = new Templater(
+            array(
+                // YOUR_PLUGIN_DIR or plugin_dir_path(__FILE__)
+                'plugin_directory' => plugin_dir_path(__FILE__),
+                // should end with _ > prefix_
+                'plugin_prefix' => 'plugin_prefix_',
+                // templates directory inside your plugin
+                'plugin_template_directory' => 'templates',
+            )
+        );
+        $my_templater->add(
+            array(
+                'page' => array(
+                    'checkout.php' => 'Page Custom Template',
+                ),
+            )
+        )->register();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,26 +82,33 @@ add_filter('json_api_controllers', 'registerJsonApiController');
 add_filter('json_api_mstore_user_controller_path', 'setMstoreUserControllerPath');
 add_action('init', 'json_api_mstore_user_checkAuthCookie', 100);
 
-function registerJsonApiController($aControllers)
-{
-    $aControllers[] = 'Mstore_User';
-    return $aControllers;
+if(!function_exists('registerJsonApiController')){
+    function registerJsonApiController($aControllers)
+    {
+        $aControllers[] = 'Mstore_User';
+        return $aControllers;
+    }
 }
 
-function setMstoreUserControllerPath()
-{
-    return dirname(__FILE__) . '/mstore-user.php';
+if(!function_exists('setMstoreUserControllerPath')){
+    function setMstoreUserControllerPath()
+    {
+        return dirname(__FILE__) . '/mstore-user.php';
+    }
 }
 
-function json_api_mstore_user_checkAuthCookie()
-{
-    global $json_api;
+if(!function_exists('json_api_mstore_user_checkAuthCookie')){
 
-    if ($json_api->query->cookie) {
-        $user_id = wp_validate_auth_cookie($json_api->query->cookie, 'logged_in');
-        if ($user_id) {
-            $user = get_userdata($user_id);
-            wp_set_current_user($user->ID, $user->user_login);
+    function json_api_mstore_user_checkAuthCookie()
+    {
+        global $json_api;
+
+        if ($json_api->query->cookie) {
+            $user_id = wp_validate_auth_cookie($json_api->query->cookie, 'logged_in');
+            if ($user_id) {
+                $user = get_userdata($user_id);
+                wp_set_current_user($user->ID, $user->user_login);
+            }
         }
     }
 }
