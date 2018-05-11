@@ -930,10 +930,10 @@ class TemplateSearch extends Template {
             );
 		}
 		if($request['search']){
-            $args[] = ['s' => $request['search'] ];
+            $args['s'] = $request['search'];
 		}
 		$posts = query_posts($args);
-
+		
 		$data = array();
 		$items = (array)($posts);
 		
