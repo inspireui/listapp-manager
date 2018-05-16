@@ -187,8 +187,9 @@ class Template extends WP_REST_Posts_Controller
 			) );
 	    }
 
-
 	}
+
+
 
  	/* Meta Fields Rest API */
 	/**
@@ -430,7 +431,7 @@ class Template extends WP_REST_Posts_Controller
 		$this->add_additional_fields_schema($schema);
 		// Base fields for every post.
 		$data = array();
-
+		// return $schema;
 		if ( ! empty( $schema['properties']['id'] ) ) {
 			$data['id'] = $post->ID;
 		}
@@ -479,6 +480,11 @@ class Template extends WP_REST_Posts_Controller
 
 		if ( ! empty( $schema['properties']['password'] ) ) {
 			$data['password'] = $post->post_password;
+		}
+
+		if ( ! empty( $post->distance) ) {
+
+			$data['distance'] = $post->distance;
 		}
 
 		if ( ! empty( $schema['properties']['slug'] ) ) {
@@ -587,8 +593,10 @@ class Template extends WP_REST_Posts_Controller
 			}
 		}
 
+
 		if ( ! empty( $schema['properties']['meta'] ) ) {
 			$data['meta'] = $this->meta->get_value( $post->ID, $request );
+
 		}
 
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
@@ -674,8 +682,6 @@ class Template extends WP_REST_Posts_Controller
 
 	}
 
-
-	
 } // end Class
 
 
@@ -817,7 +823,6 @@ class TemplateSearch extends Template {
 	public function __construct(){
 		/* extends from parent */
 		parent::__construct('job_listing');
-		
 		add_action('rest_api_init', array($this, 'register_fields_for_search_advance'));
 	}
 
@@ -859,6 +864,17 @@ class TemplateSearch extends Template {
 							return is_string( $param );
 						}
 					),
+					'isGetLocate' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_string( $param );
+						}
+					),
+					'lat' => array(
+						
+					),
+					'long' => array(
+					
+					),
 					'page' => array(
 						'validate_callback' => function($param, $request, $key) {
 							return is_numeric( $param );
@@ -882,27 +898,21 @@ class TemplateSearch extends Template {
 			'posts_per_page' => $request['limit'] ? $request['limit'] : 10,
 		];
 		if($request['tags']){
-			$args['tax_query'] = array(
-                array(
+			$args['tax_query'][] = array(
                     'taxonomy' => 'case27_job_listing_tags',
                     'field'    => 'term_id',
                     'terms'    => explode(',', $request['tags'])
-                ),
             );
 		}
 		if($request['categories']){
-			
-			$args['tax_query'] = array(
-                array(
+			$args['tax_query'][] = array(
                     'taxonomy' => 'job_listing_category',
                     'field'    => 'term_id',
                     'terms'    =>  explode(',', $request['categories']),
-                ),
             );
             
 		}
 		if($request['type']){
-		
 			$args['meta_query']= [
 				'key'     => '_case27_listing_type',
 				'value'   => $request['type'],
@@ -911,12 +921,10 @@ class TemplateSearch extends Template {
 		}
 		//case for listify
 		if($request['regions']){
-            $args['tax_query'] = array(
-                array(
+            $args['tax_query'][] = array(
                     'taxonomy' => 'job_listing_region',
                     'field'    => 'term_id',
                     'terms'    =>  explode(',', $request['regions']),
-                ),
             );
 		}
 		//case for listable
@@ -932,11 +940,32 @@ class TemplateSearch extends Template {
 		if($request['search']){
             $args['s'] = $request['search'];
 		}
-		$posts = query_posts($args);
+
+		global $wpdb;
+		$posts= query_posts($args);
+		
+		if($request['isGetLocate']){
+			$lat = $request['lat'];
+			$long = $request['long'];
+			$sql = "SELECT p.*, ";
+			$sql.= " (6371 * acos (cos (radians($lat)) * cos(radians(t.lat)) * cos(radians(t.lng) - radians($long)) + ";
+			$sql.="sin (radians($lat)) * sin(radians(t.lat)))) AS distance FROM (SELECT b.post_id, sum(if(";
+			$sql.="meta_key = 'geolocation_lat', meta_value, 0)) AS lat, sum(if(meta_key = 'geolocation_long', ";
+			$sql.="meta_value, 0)) AS lng FROM {$wpdb->prefix}posts a, {$wpdb->prefix}postmeta b WHERE a.id = b.post_id AND (";
+			$sql.="b.meta_key='geolocation_lat' OR b.meta_key='geolocation_long') GROUP BY b.post_id) AS t INNER ";
+			$sql.="JOIN {$wpdb->prefix}posts as p on (p.ID=t.post_id)  ORDER BY distance LIMIT 10";
+			$vars = array($lat, $long, $lat);
+			
+			$posts = $wpdb->get_results($sql, OBJECT);
+			if ($wpdb->last_error) {
+			 return 'Error: ' . $wpdb->last_error;
+			}
+			// return $posts;
+		}
 		
 		$data = array();
 		$items = (array)($posts);
-		
+		// return $items;
 		foreach($items as $item):
 			$itemdata = $this->prepare_item_for_response( $item , $request);
 			$data[] = $this->prepare_response_for_collection( $itemdata );
@@ -945,11 +974,6 @@ class TemplateSearch extends Template {
 		return new WP_REST_Response( $data, 200 );
 	}
 }
-
-
-
-
-
 
 
 
