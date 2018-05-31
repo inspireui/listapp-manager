@@ -3,7 +3,7 @@
  * Plugin Name: ListApp Mobile Manager
  * Plugin URI: https://github.com/inspireui/listapp-manager
  * Description: The ListApp Settings and APIs for supporting the Listing Directory mobile app by React Native framework
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: InspireUI
  * Author URI: http://inspireui.com
  *

@@ -5,21 +5,18 @@
   Controller description: Controller that extend from Mstore User
   Controller Author: InspireUI
 */
-use JO\Module\Templater\Templater;
+// use JO\Module\Templater\Templater;
 class MstoreCheckOut
 {
-    public $version = '1.0.0';
 
     public function __construct()
     {
-        define('LISTAPP_MANAGER_VERSION', $this->version);
-        define('LISTAPP_PLUGIN_FILE', __FILE__);
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
         if (is_plugin_active('woocommerce/woocommerce.php') == false) {
             return 0;
         }
 
-        require_once __DIR__ . '/../wp-templater/src/Templater.php';
+        // require_once __DIR__ . '/../wp-templater/src/Templater.php';
         require_once __DIR__ . '/../templates/class-mobile-detect.php';
         add_action('wp_print_scripts', array($this, 'handle_received_order_page'));
     }
@@ -43,13 +40,13 @@ class MstoreCheckOut
 
 $mstoreCheckOut = new MstoreCheckOut();
 
-
 add_action('plugins_loaded', 'load_templater');
 if(!function_exists('load_templater')){
     function load_templater()
     {
+        include LISTAPP_SETTING_PLUGIN_PATH."wp-templater/src/Templater.php"; 
         // add our new custom templates
-        $my_templater = new Templater(
+        $my_templater =  new Templater(
             array(
                 // YOUR_PLUGIN_DIR or plugin_dir_path(__FILE__)
                 'plugin_directory' => plugin_dir_path(__FILE__),
