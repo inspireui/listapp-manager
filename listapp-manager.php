@@ -78,6 +78,17 @@ class ListAppSetting
 
 
 
+    
+
+
+    /**
+     * Call the function to display view
+     */
+    public function display_setting()
+    {
+        require_once LISTAPP_SETTING_PLUGIN_PATH . '/templates/setting-template.php';
+    }
+
     public function output_pushNotification(){
         require_once LISTAPP_SETTING_PLUGIN_PATH . '/templates/push-notification.php';
     }
@@ -90,15 +101,6 @@ class ListAppSetting
         require_once LISTAPP_SETTING_PLUGIN_PATH . '/controllers/mstore-checkout.php';
         require_once LISTAPP_SETTING_PLUGIN_PATH . '/rest-api/template.php';
     }
-
-    /**
-     * Call the function to display view
-     */
-    public function display_setting()
-    {
-        require_once LISTAPP_SETTING_PLUGIN_PATH . '/templates/setting-template.php';
-    }
-
     /**
      * Set default config for the app
      */

@@ -6,15 +6,16 @@ class Template extends WP_REST_Posts_Controller
 	protected $_template = 'listable'; // get_template
 	protected $_listable = 'listable';
 	protected $_listify = 'listify';
+	protected $_listingPro = 'listingpro';
 	protected $_myListing = 'my listing';
 
 	protected $_customPostType = ['job_listing']; // all custom post type
-	protected $_isListable,  $_isListify, $_isMyListing;
+	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro;
 
 	public function __construct(){
 		/* extends from parent */
 		parent::__construct('job_listing');
-		
+		// echo wp_get_theme();
 		$isChild = strstr(strtolower(wp_get_theme()), "child");
 		if($isChild == 'child'){
 			$string = explode(" ", wp_get_theme());
@@ -22,10 +23,12 @@ class Template extends WP_REST_Posts_Controller
 		}else{
 			$this->_template = strtolower(wp_get_theme());
 		}
-		
+
+	
 	 	$this->_isListable = $this->_template == $this->_listable ? 1 : 0;
 		$this->_isListify = $this->_template == $this->_listify ? 1 : 0;
 		$this->_isMyListing = $this->_template == $this->_myListing ? 1 : 0;
+		$this->_isListingPro = $this->_template == $this->_listingPro ? 1 : 0;
 
 		add_action('init', array($this, 'add_custom_type_to_rest_api'));
 		add_action('rest_api_init', array($this, 'register_add_more_fields_to_rest_api'));
@@ -63,12 +66,13 @@ class Template extends WP_REST_Posts_Controller
 	 */
 	public function register_add_more_fields_to_rest_api()
 	{
-	    register_rest_field('job_listing_category',
+
+		// Get Field Category Custom 
+		$field_cate = $this->_isListingPro ? 'listing-category' : 'job_listing_category';
+	    register_rest_field($field_cate,
 	        'term_image',
 	        array(
 	            'get_callback' => array($this, 'get_term_meta_image'),
-	            'update_callback' => null,
-	            'schema' => null,
 	        )
 	    );
 
@@ -187,6 +191,7 @@ class Template extends WP_REST_Posts_Controller
 			) );
 	    }
 
+
 	}
 
 
@@ -206,6 +211,8 @@ class Template extends WP_REST_Posts_Controller
 			$name = 'pix_term_image';
 		}elseif($this->_isListify){
 			$name = 'thumbnail_id';
+		}elseif($this->_isListingPro){
+			$name = 'lp_category_banner_id';
 		}else{
 			$name = 'image';
 		}
