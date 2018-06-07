@@ -99,7 +99,7 @@ class ListAppSetting
 
     public function load_layout(){
         require_once LISTAPP_SETTING_PLUGIN_PATH . '/controllers/mstore-checkout.php';
-        require_once LISTAPP_SETTING_PLUGIN_PATH . '/rest-api/template.php';
+        require_once LISTAPP_SETTING_PLUGIN_PATH . '/rest-api/class.api.fields.php';
     }
     /**
      * Set default config for the app

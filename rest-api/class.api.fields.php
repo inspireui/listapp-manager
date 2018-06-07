@@ -9,7 +9,7 @@ class Template extends WP_REST_Posts_Controller
 	protected $_listingPro = 'listingpro';
 	protected $_myListing = 'my listing';
 
-	protected $_customPostType = ['job_listing']; // all custom post type
+	protected $_customPostType = ['job_listing',  'listing']; // all custom post type
 	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro;
 
 	public function __construct(){
@@ -48,7 +48,7 @@ class Template extends WP_REST_Posts_Controller
 
 
 	    //be sure to set this to the name of your taxonomy!
-	    $taxonomy_name = array('job_listing_category', 'job_listing_type', 'job_listing_region');
+	    $taxonomy_name = array('job_listing_category', 'job_listing_type', 'job_listing_region', 'location');
 	    if (isset($wp_taxonomies)) {
 	        foreach ($taxonomy_name as $k => $name):
 	            if (isset($wp_taxonomies[$name])) {
@@ -191,10 +191,54 @@ class Template extends WP_REST_Posts_Controller
 			) );
 	    }
 
+	    if($this->_isListingPro){
+	    	register_rest_field($this->_customPostType,
+		        'gallery_images',
+		        array(
+		            'get_callback' => array($this, 'get_post_gallery_images_listingPro'),
+		        )
+		    );
+		    register_rest_field($this->_customPostType,
+		        'more_options',
+		        array(
+		            'get_callback' => array($this, 'get_post_more_options'),
+		        )
+		    );
+
+		    
+	    }
+
 
 	}
 
+	
 
+	/* --- - ListingPro - ---*/
+	public function get_post_gallery_images_listingPro($object)
+	{
+
+		$gallery =  get_post_meta($object['id'], 'gallery_image_ids', true);
+		$gallery = explode(',', $gallery);
+		if($gallery){
+			foreach ($gallery as $value) {
+				$getVal = get_post_meta($value, '_wp_attached_file', true);
+				if(!empty($getVal)){
+					$results[] =  get_bloginfo('url').'/wp-content/uploads/'.$getVal;
+				}
+			}
+		}
+		return $results;
+	}
+
+	public function get_post_more_options($object)
+	{
+
+		$options =  get_post_meta($object['id'], 'lp_listingpro_options', true);
+		return $options;
+	}
+
+
+	/*- --- - Listable - ---- */
 
  	/* Meta Fields Rest API */
 	/**
