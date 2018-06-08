@@ -564,6 +564,12 @@ class Template extends WP_REST_Posts_Controller
 			);
 
 			remove_filter( 'protected_title_format', array( $this, 'protected_title_format' ) );
+		}else{
+			if($this->_isListingPro){
+				$data['title'] = array(
+					'rendered' => $post->post_title
+				);
+			}
 		}
 
 		$has_password_filter = false;
@@ -582,7 +588,14 @@ class Template extends WP_REST_Posts_Controller
 				'rendered'  => post_password_required( $post ) ? '' : apply_filters( 'the_content', $post->post_content ),
 				'protected' => (bool) $post->post_password,
 			);
+		}else{
+			if($this->_isListingPro){
+				$data['content'] = array(
+					'rendered' => $post->post_content
+				);
+			}
 		}
+
 
 		if ( ! empty( $schema['properties']['excerpt'] ) ) {
 			/** This filter is documented in wp-includes/post-template.php */
@@ -743,8 +756,9 @@ class TemplateExtendMyListing extends WP_REST_Terms_Controller
 	protected $_listable = 'listable';
 	protected $_listify = 'listify';
 	protected $_myListing = 'my listing';
+	protected $_listingPro = 'listingPro';
 
-	protected $_customPostType = ['job_listing']; // all custom post type
+	protected $_customPostType = ['job_listing', 'listing']; // all custom post type
 	protected $_isListable,  $_isListify, $_isMyListing;
 
 	public function __construct(){
@@ -944,20 +958,20 @@ class TemplateSearch extends Template {
 
 	public function search_by_myParams($request){
 		$args = [
-			'post_type' => 'job_listing',
+			'post_type' => $this->_customPostType,
 			'paged' => $request['page'] ? $request['page'] : 1,
 			'posts_per_page' => $request['limit'] ? $request['limit'] : 10,
 		];
 		if($request['tags']){
 			$args['tax_query'][] = array(
-                    'taxonomy' => 'case27_job_listing_tags',
+                    'taxonomy' => $this->_listingPro ? 'list-tags' : 'case27_job_listing_tags',
                     'field'    => 'term_id',
                     'terms'    => explode(',', $request['tags'])
             );
 		}
 		if($request['categories']){
 			$args['tax_query'][] = array(
-                    'taxonomy' => 'job_listing_category',
+                    'taxonomy' => $this->_listingPro ? 'listing-category' : 'job_listing_category',
                     'field'    => 'term_id',
                     'terms'    =>  explode(',', $request['categories']),
             );
@@ -988,6 +1002,26 @@ class TemplateSearch extends Template {
                 ),
             );
 		}
+		//case for listingPro
+		if($request['features']){
+ 			$args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'features',
+                    'field'    => 'term_id',
+                    'terms'    =>  explode(',', $request['features']),
+                ),
+            );
+		}
+		if($request['location']){
+			 $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'location',
+                    'field'    => 'term_id',
+                    'terms'    =>  explode(',', $request['location']),
+                ),
+            );
+		}
+
 		if($request['search']){
             $args['s'] = $request['search'];
 		}
