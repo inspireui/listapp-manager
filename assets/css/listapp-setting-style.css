@@ -192,7 +192,12 @@ div[data-schemapath="root.0.id"] {display: none !important}
 #editor_holder_color .row {
     margin: 20px 0;
 }
-
+#editor_holder div[data-schemapath="root.0.row"],
+#editor_holder div[data-schemapath="root.0.height"],
+#editor_holder div[data-schemapath="root.0.paging"] {
+    float: left;
+    width: 100%;
+}
 
 #editor_holder_general .row {
     margin: 5px 0;
