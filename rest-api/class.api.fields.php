@@ -8,9 +8,10 @@ class Template extends WP_REST_Posts_Controller
 	protected $_listify = 'listify';
 	protected $_listingPro = 'listingpro';
 	protected $_myListing = 'my listing';
+	protected $_listingGo = 'listgo';
 
 	protected $_customPostType = ['job_listing',  'listing']; // all custom post type
-	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro;
+	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro, $_isListingGo;
 
 	public function __construct(){
 		/* extends from parent */
@@ -29,6 +30,7 @@ class Template extends WP_REST_Posts_Controller
 		$this->_isListify = $this->_template == $this->_listify ? 1 : 0;
 		$this->_isMyListing = $this->_template == $this->_myListing ? 1 : 0;
 		$this->_isListingPro = $this->_template == $this->_listingPro ? 1 : 0;
+		$this->_isListingGo = $this->_template == $this->_listingGo ? 1: 0;
 
 		add_action('init', array($this, 'add_custom_type_to_rest_api'));
 		add_action('rest_api_init', array($this, 'register_add_more_fields_to_rest_api'));
@@ -48,7 +50,7 @@ class Template extends WP_REST_Posts_Controller
 
 
 	    //be sure to set this to the name of your taxonomy!
-	    $taxonomy_name = array('job_listing_category', 'job_listing_type', 'job_listing_region', 'location');
+	    $taxonomy_name = array('job_listing_category', 'listing_cat', 'job_listing_type', 'job_listing_region', 'location');
 	    if (isset($wp_taxonomies)) {
 	        foreach ($taxonomy_name as $k => $name):
 	            if (isset($wp_taxonomies[$name])) {
@@ -68,7 +70,7 @@ class Template extends WP_REST_Posts_Controller
 	{
 
 		// Get Field Category Custom 
-		$field_cate = $this->_isListingPro ? 'listing-category' : 'job_listing_category';
+		$field_cate = $this->_isListingPro ? 'listing-category' :  $this->_isListingGo ?  'listing_cat' : 'job_listing_category';
 	    register_rest_field($field_cate,
 	        'term_image',
 	        array(
@@ -257,6 +259,12 @@ class Template extends WP_REST_Posts_Controller
 			$name = 'thumbnail_id';
 		}elseif($this->_isListingPro){
 			$name = 'lp_category_banner_id';
+		}elseif($this->_listingGo){
+			$settingCat = json_decode(get_option('_wiloke_cat_settings_'.$object['id'], true));
+			if( isset($settingCat->featured_image) && !empty($settingCat->featured_image) ){
+	            $URL = wp_get_attachment_image_url($settingCat->featured_image, 'large');
+				return $URL;
+			}
 		}else{
 			$name = 'image';
 		}
@@ -581,7 +589,9 @@ class Template extends WP_REST_Posts_Controller
 			$has_password_filter = true;
 		}
 
+		
 		if ( ! empty( $schema['properties']['content'] ) ) {
+			// WPBMap::addAllMappedShortcodes();
 			$data['content'] = array(
 				'raw'       => $post->post_content,
 				/** This filter is documented in wp-includes/post-template.php */
