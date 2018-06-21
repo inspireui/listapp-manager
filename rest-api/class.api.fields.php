@@ -210,10 +210,28 @@ class Template extends WP_REST_Posts_Controller
 		    
 	    }
 
+	    //for listing Go Theme
+
+	    if($this->_isListingGo){
+	    	register_rest_field($this->_customPostType,
+		        'listing_settings',
+		        array(
+		            'get_callback' => array($this, 'get_listing_settings'),
+		        )
+		    );
+	    }
+
 
 	}
 
-	
+	/* --- - ListingGo - ---*/
+	public function get_listing_settings($object)
+	{
+
+		$options =  get_post_meta($object['id'], 'listing_settings', true);
+		return $options;
+	}
+
 
 	/* --- - ListingPro - ---*/
 	public function get_post_gallery_images_listingPro($object)
@@ -343,7 +361,12 @@ class Template extends WP_REST_Posts_Controller
 	 */
 	public function get_image_gallery($object)
 	{
-		$name = $this->_isListify ? '_gallery_images' : '_job_gallery';
+		$name = '_job_gallery';
+		if($this->_isListify){
+			$name = '_gallery_images';
+		}elseif($this->_isListingGo){
+			$name = 'gallery_settings';
+		}
 	    $gallery = get_post_meta($object['id'], $name, true);
 	    return $gallery;
 	}
