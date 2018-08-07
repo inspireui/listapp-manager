@@ -950,6 +950,7 @@ if (isset($_POST['submit']) && wp_verify_nonce( $nonce, 'inspireuiteam')) {
     jQuery('select[name="root[0][component]"]').on('change', function () {
         let valChange = jQuery(this).val();
         if (valChange == 'news') {
+            console.log('vao', valChange)
             $cateNews.enable();
             $cateListing.disable();
         } else {

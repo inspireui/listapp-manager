@@ -8,10 +8,9 @@ class Template extends WP_REST_Posts_Controller
 	protected $_listify = 'listify';
 	protected $_listingPro = 'listingpro';
 	protected $_myListing = 'my listing';
-	protected $_listingGo = 'listgo';
 
 	protected $_customPostType = ['job_listing',  'listing']; // all custom post type
-	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro, $_isListingGo;
+	protected $_isListable,  $_isListify, $_isMyListing, $_isListingPro;
 
 	public function __construct(){
 		/* extends from parent */
@@ -30,7 +29,6 @@ class Template extends WP_REST_Posts_Controller
 		$this->_isListify = $this->_template == $this->_listify ? 1 : 0;
 		$this->_isMyListing = $this->_template == $this->_myListing ? 1 : 0;
 		$this->_isListingPro = $this->_template == $this->_listingPro ? 1 : 0;
-		$this->_isListingGo = $this->_template == $this->_listingGo ? 1: 0;
 
 		add_action('init', array($this, 'add_custom_type_to_rest_api'));
 		add_action('rest_api_init', array($this, 'register_add_more_fields_to_rest_api'));
@@ -50,7 +48,7 @@ class Template extends WP_REST_Posts_Controller
 
 
 	    //be sure to set this to the name of your taxonomy!
-	    $taxonomy_name = array('job_listing_category', 'listing_cat', 'job_listing_type', 'job_listing_region', 'location');
+	    $taxonomy_name = array('job_listing_category', 'job_listing_type', 'job_listing_region', 'location');
 	    if (isset($wp_taxonomies)) {
 	        foreach ($taxonomy_name as $k => $name):
 	            if (isset($wp_taxonomies[$name])) {
@@ -70,7 +68,7 @@ class Template extends WP_REST_Posts_Controller
 	{
 
 		// Get Field Category Custom 
-		$field_cate = $this->_isListingPro ? 'listing-category' :  $this->_isListingGo ?  'listing_cat' : 'job_listing_category';
+		$field_cate = $this->_isListingPro ? 'listing-category' : 'job_listing_category';
 	    register_rest_field($field_cate,
 	        'term_image',
 	        array(
@@ -152,9 +150,6 @@ class Template extends WP_REST_Posts_Controller
 				'callback' => array($this, 'get_job_listing_by_tags'),
 				'args' => array(
 					'tag' => array(
-						'validate_callback' => function($param, $request, $key) {
-							return is_numeric( $param );
-						}
 					),
 					'page' => array(
 						'validate_callback' => function($param, $request, $key) {
@@ -210,28 +205,37 @@ class Template extends WP_REST_Posts_Controller
 		    
 	    }
 
-	    //for listing Go Theme
-
-	    if($this->_isListingGo){
-	    	register_rest_field($this->_customPostType,
-		        'listing_settings',
-		        array(
-		            'get_callback' => array($this, 'get_listing_settings'),
-		        )
-		    );
-	    }
-
 
 	}
 
-	/* --- - ListingGo - ---*/
-	public function get_listing_settings($object)
-	{
+	/* --- - MyListing - ---*/
+	public function get_job_listing_by_tags($request){
+		$args = [
+			'post_type' => 'job_listing',
+			'paged' => $request['page'] ? $request['page'] : 1,
+			'posts_per_page' => $request['limit'] ? $request['limit'] : 10,
+		];
+		if($request['tag']){
+			$args['tax_query'][] = array(
+                    'taxonomy' => 'case27_job_listing_tags',
+                    'field'    => 'term_id',
+                    'terms'    => explode(',', $request['tag'])
+            );
+		}
+		global $wpdb;
+		$posts= query_posts($args);
+		$data = array();
+		$items = (array)($posts);
+		// return $items;
+		foreach($items as $item):
+			$itemdata = $this->prepare_item_for_response( $item , $request);
+			$data[] = $this->prepare_response_for_collection( $itemdata );
+		endforeach;
 
-		$options =  get_post_meta($object['id'], 'listing_settings', true);
-		return $options;
+		return new WP_REST_Response( $data, 200 );
+
 	}
-
+	
 
 	/* --- - ListingPro - ---*/
 	public function get_post_gallery_images_listingPro($object)
@@ -277,12 +281,6 @@ class Template extends WP_REST_Posts_Controller
 			$name = 'thumbnail_id';
 		}elseif($this->_isListingPro){
 			$name = 'lp_category_banner_id';
-		}elseif($this->_listingGo){
-			$settingCat = json_decode(get_option('_wiloke_cat_settings_'.$object['id'], true));
-			if( isset($settingCat->featured_image) && !empty($settingCat->featured_image) ){
-	            $URL = wp_get_attachment_image_url($settingCat->featured_image, 'large');
-				return $URL;
-			}
 		}else{
 			$name = 'image';
 		}
@@ -299,7 +297,11 @@ class Template extends WP_REST_Posts_Controller
 	 */
 	public function get_product_id_linked($object)
 	{
-	    $product_id = get_post_meta($object['id'], '_products', true);
+		$name = '_products';
+		if($this->_isMyListing){
+			$name = '_select_products';
+		}
+	    $product_id = get_post_meta($object['id'], $name, true);
 	    return $product_id;
 	}
 
@@ -361,12 +363,7 @@ class Template extends WP_REST_Posts_Controller
 	 */
 	public function get_image_gallery($object)
 	{
-		$name = '_job_gallery';
-		if($this->_isListify){
-			$name = '_gallery_images';
-		}elseif($this->_isListingGo){
-			$name = 'gallery_settings';
-		}
+		$name = $this->_isListify ? '_gallery_images' : '_job_gallery';
 	    $gallery = get_post_meta($object['id'], $name, true);
 	    return $gallery;
 	}
@@ -595,12 +592,6 @@ class Template extends WP_REST_Posts_Controller
 			);
 
 			remove_filter( 'protected_title_format', array( $this, 'protected_title_format' ) );
-		}else{
-			if($this->_isListingPro){
-				$data['title'] = array(
-					'rendered' => $post->post_title
-				);
-			}
 		}
 
 		$has_password_filter = false;
@@ -612,23 +603,14 @@ class Template extends WP_REST_Posts_Controller
 			$has_password_filter = true;
 		}
 
-		
 		if ( ! empty( $schema['properties']['content'] ) ) {
-			// WPBMap::addAllMappedShortcodes();
 			$data['content'] = array(
 				'raw'       => $post->post_content,
 				/** This filter is documented in wp-includes/post-template.php */
 				'rendered'  => post_password_required( $post ) ? '' : apply_filters( 'the_content', $post->post_content ),
 				'protected' => (bool) $post->post_password,
 			);
-		}else{
-			if($this->_isListingPro){
-				$data['content'] = array(
-					'rendered' => $post->post_content
-				);
-			}
 		}
-
 
 		if ( ! empty( $schema['properties']['excerpt'] ) ) {
 			/** This filter is documented in wp-includes/post-template.php */
@@ -789,9 +771,8 @@ class TemplateExtendMyListing extends WP_REST_Terms_Controller
 	protected $_listable = 'listable';
 	protected $_listify = 'listify';
 	protected $_myListing = 'my listing';
-	protected $_listingPro = 'listingPro';
 
-	protected $_customPostType = ['job_listing', 'listing']; // all custom post type
+	protected $_customPostType = ['job_listing']; // all custom post type
 	protected $_isListable,  $_isListify, $_isMyListing;
 
 	public function __construct(){
@@ -928,7 +909,6 @@ class TemplateSearch extends Template {
 	* define for method for search
 	*/
 	public function register_fields_for_search_advance(){
-		// if($this->_isMyListing){
 			/* get search by tags & categories for case myListing */
 		    register_rest_route( 'search/v1', '/job_listing', array(
 				'methods' => 'GET',
@@ -985,37 +965,60 @@ class TemplateSearch extends Template {
 					),
 				),
 			) );
-		// }
 
+		if($this->_isMyListing){
+			register_rest_route( 'searchExtends/v1', '/job_listing', array(
+				'methods' => 'GET',
+				'callback' => array($this, 'searchQuery'),
+				'args' => array(
+					
+					'search' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_string( $param );
+						}
+					),
+					'page' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+					'limit' => array(
+						'validate_callback' => function($param, $request, $key) {
+							return is_numeric( $param );
+						}
+					),
+				),
+			) );
+		}
 	}
 
 	public function search_by_myParams($request){
 		$args = [
-			'post_type' => $this->_customPostType,
+			'post_type' => 'job_listing',
 			'paged' => $request['page'] ? $request['page'] : 1,
 			'posts_per_page' => $request['limit'] ? $request['limit'] : 10,
 		];
 		if($request['tags']){
 			$args['tax_query'][] = array(
-                    'taxonomy' => $this->_listingPro ? 'list-tags' : 'case27_job_listing_tags',
+                    'taxonomy' => 'case27_job_listing_tags',
                     'field'    => 'term_id',
                     'terms'    => explode(',', $request['tags'])
             );
 		}
 		if($request['categories']){
 			$args['tax_query'][] = array(
-                    'taxonomy' => $this->_listingPro ? 'listing-category' : 'job_listing_category',
+                    'taxonomy' => 'job_listing_category',
                     'field'    => 'term_id',
                     'terms'    =>  explode(',', $request['categories']),
             );
             
 		}
 		if($request['type']){
-			$args['meta_query']= [
+			$args['meta_query']= [[
 				'key'     => '_case27_listing_type',
 				'value'   => $request['type'],
 				'compare' => 'LIKE',
-			];
+			]];
 		}
 		//case for listify
 		if($request['regions']){
@@ -1035,26 +1038,6 @@ class TemplateSearch extends Template {
                 ),
             );
 		}
-		//case for listingPro
-		if($request['features']){
- 			$args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'features',
-                    'field'    => 'term_id',
-                    'terms'    =>  explode(',', $request['features']),
-                ),
-            );
-		}
-		if($request['location']){
-			 $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'location',
-                    'field'    => 'term_id',
-                    'terms'    =>  explode(',', $request['location']),
-                ),
-            );
-		}
-
 		if($request['search']){
             $args['s'] = $request['search'];
 		}
@@ -1091,7 +1074,59 @@ class TemplateSearch extends Template {
 
 		return new WP_REST_Response( $data, 200 );
 	}
+
+	public function searchQuery($request){
+		$args = [
+			'post_type' => 'job_listing',
+			'paged' => $request['page'] ? $request['page'] : 1,
+			'posts_per_page' => $request['limit'] ? $request['limit'] : 10,
+		];
+		if($request['search']){
+            $args['s'] = $request['search'];
+		}
+
+		$categories = get_terms([
+            'taxonomy' => 'job_listing_category',
+            'search' => isset($request['search']) ? $request['search'] : '',
+        ]);
+
+		$args['meta_query'] = [[
+                'key' => '_case27_listing_type',
+                'value' => '',
+                'compare' => '!=',
+         ]];
+
+        global $wpdb;
+        $listings= query_posts($args);
+		
+		
+
+		$data = array();
+		$items = (array)($listings);
+		// return $items;
+		foreach($items as $item):
+			$itemdata = $this->prepare_item_for_response( $item , $request);
+			$data[] = $this->prepare_response_for_collection( $itemdata );
+		endforeach;
+
+		$listings_grouped = [];
+
+        foreach ($data as $listing) {
+        	// return $listing['job_listing_category'][0];
+        	foreach ($listing['job_listing_category'] as $value) {
+        		$type = get_term_by('id', $value, 'job_listing_category')->name;
+	            if (!isset($listings_grouped[$type])) $listings_grouped[$type] = [];
+
+	            $listings_grouped[$type][] = $listing;	
+        	}
+            
+        }
+
+
+		return new WP_REST_Response( $listings_grouped, 200 );
+	}
 }
+
 
 
 
